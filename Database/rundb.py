@@ -22,3 +22,10 @@ print("\nRoute:")
 curs = conn.execute(sql)
 for row in curs:
     print(row)
+
+sql = 'SELECT * FROM Flight'
+
+print("\nFlights:")
+curs = conn.execute(sql)
+for row in curs:
+    print(row)

@@ -90,8 +90,8 @@ conn.execute(
     ID     INTEGER      NOT NULL PRIMARY KEY AUTOINCREMENT,
     plane  VARCHAR      NOT NULL,
     route  VARCHAR      NOT NULL,
-    date   VARCHAR      NOT NULL,
-    price  FLOAT        NOT NULL,
+    date   DATE         NOT NULL,
+    price  REAL        NOT NULL,
     FOREIGN KEY (plane) REFERENCES Plane(ID),
     FOREIGN KEY (route) REFERENCES Route(ID)
     )
