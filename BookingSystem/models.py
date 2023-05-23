@@ -25,7 +25,7 @@ class Passenger(models.Model):
 class Airport(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20, primary_key=True)
-    time_Zone = models.CharField(max_length=50)
+    time_zone = models.CharField(max_length=50)
 
     class Meta:
         db_table = 'Airport'
@@ -35,7 +35,7 @@ class Route(models.Model):
     route_id = models.CharField(max_length=100, primary_key=True)
     depature_time = models.TimeField()
     arrival_time = models.TimeField()
-    stopover_time = models.TimeField(blank=True, null=True)
+    stopover_time = models.IntegerField(blank=True, null=True)
     depature_location = models.ForeignKey(Airport, related_name='depature_location',
                                           on_delete=models.CASCADE)
     arrival_location = models.ForeignKey(Airport, related_name='arrival_location',
