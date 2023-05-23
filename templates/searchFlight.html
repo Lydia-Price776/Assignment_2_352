@@ -6,5 +6,17 @@
 </head>
 <body>
 <h1>Search for a flight!</h1>
+
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+{% if departure_flight %}
+    <h2>Filtered Data:</h2>
+    <p>Depature : {{ departure_flight }}</p>
+{% endif %}
+
 </body>
 </html>

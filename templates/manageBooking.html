@@ -8,3 +8,45 @@
 <h1>Manage a booking!</h1>
 </body>
 </html>
+
+
+
+<form method="post" action="">
+    {% csrf_token %}
+    <fieldset>
+        <input type="radio" id="one_way" value="one way" name="flight" checked="checked">
+        <label for="one_way">One Way</label>
+
+        <input type="radio" id="return" value="return" name="flight">
+        <label for="return">Return</label>
+    </fieldset>
+
+    <label for="depature_date">Depature:</label>
+    <input type="date" id="depature_date"/>
+
+    <label for="depature_airport">Depature Airport:</label>
+    <select id="depature_airport">
+        <option value="NZNE">Dairy Flat, New Zealand (NZNE)</option>
+        <option value="YMHB">Hobart, Australia (YMHB)</option>
+        <option value="NZRO">Rotorua, New Zealand (NZRO)</option>
+        <option value="NZGB"> Great Barrier Island, New Zealand(NZGB)</option>
+        <option value="NZCI">Tuuta, Chatham Islands (NZCI)</option>
+        <option value="NZLT">Lake Tekapo, New Zealand (NZLT)</option>
+
+
+    </select>
+    <label for="arrival_airport">To:</label>
+    <select id="arrival_airport">
+        <option value="NZNE">Dairy Flat, New Zealand (NZNE)</option>
+        <option value="YMHB">Hobart, Australia (YMHB)</option>
+        <option value="NZRO">Rotorua, New Zealand (NZRO)</option>
+        <option value="NZGB"> Great Barrier Island, New Zealand(NZGB)</option>
+        <option value="NZCI">Tuuta, Chatham Islands (NZCI)</option>
+        <option value="NZLT">Lake Tekapo, New Zealand (NZLT)</option>
+    </select>
+
+    <label for="return_date">Return:</label>
+    <input type="date" id="return_date"/>
+
+    <input type="Submit"/>
+</form>
