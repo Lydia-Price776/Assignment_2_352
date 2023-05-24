@@ -1,7 +1,12 @@
-from django.shortcuts import render, redirect
+import json
+
+from django.forms import model_to_dict
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .forms import SearchForm
-from .models import Airport, Flight, Route
+from .models import Flight, Route
 
 
 def homepage(request):
@@ -20,14 +25,21 @@ def search(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
-            departure_flight = Flight.objects.filter(
-                date=form.cleaned_data['departure_date']
-            )
+            departure_location = form.cleaned_data['departure_location']
+            arrival_location = form.cleaned_data['arrival_location']
+            flight_data = Flight.objects.filter(
+                date=form.cleaned_data['departure_date'],
+                route__departure_location=departure_location,
+                route__arrival_location=arrival_location).values()
 
-            context = {'form': form, 'departure_flight': departure_flight}
+            route_data = Route.objects.filter(departure_location=departure_location,
+                                              arrival_location=arrival_location).values()
 
-            # Render the template with the form and retrieved data
+            flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
+            route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
+            context = {'form': form, 'flight_data': flight_data, 'route_data': route_data}
             return render(request, 'searchFlight.html', context)
+
     else:
         form = SearchForm()
 

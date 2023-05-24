@@ -1,4 +1,6 @@
 from django.db import models
+
+
 # Create your models here.
 
 class Plane(models.Model):
@@ -31,11 +33,11 @@ class Airport(models.Model):
 
 class Route(models.Model):
     route_id = models.CharField(max_length=100, primary_key=True)
-    depature_time = models.TimeField()
+    departure_time = models.TimeField()
     arrival_time = models.TimeField()
     stopover_time = models.IntegerField(blank=True, null=True)
-    depature_location = models.ForeignKey(Airport, related_name='depature_location',
-                                          on_delete=models.CASCADE)
+    departure_location = models.ForeignKey(Airport, related_name='depature_location',
+                                           on_delete=models.CASCADE)
     arrival_location = models.ForeignKey(Airport, related_name='arrival_location',
                                          on_delete=models.CASCADE)
     stopover_location = models.ForeignKey(Airport, related_name='stopover_location',
