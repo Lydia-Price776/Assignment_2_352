@@ -2,7 +2,7 @@ import json
 
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.serializers.json import DjangoJSONEncoder
 
 from .forms import SearchForm
@@ -10,7 +10,7 @@ from .models import Flight, Route
 
 
 def homepage(request):
-    return render(request, 'homepage.html', {})
+    return render(request, 'homepage.html', {'form': SearchForm()})
 
 
 def book(request):
@@ -22,25 +22,23 @@ def manage_booking(request):
 
 
 def search(request):
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            departure_location = form.cleaned_data['departure_location']
-            arrival_location = form.cleaned_data['arrival_location']
-            flight_data = Flight.objects.filter(
-                date=form.cleaned_data['departure_date'],
-                route__departure_location=departure_location,
-                route__arrival_location=arrival_location).values()
+    departure_date = request.POST['departure_date']
+    departure_location = request.POST['departure_location']
+    arrival_location = request.POST['arrival_location']
 
-            route_data = Route.objects.filter(departure_location=departure_location,
-                                              arrival_location=arrival_location).values()
+    flight_data = Flight.objects.filter(
+        date=departure_date,
+        route__departure_location=departure_location,
+        route__arrival_location=arrival_location).values()
 
-            flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
-            route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
-            context = {'form': form, 'flight_data': flight_data, 'route_data': route_data}
-            return render(request, 'searchFlight.html', context)
+    route_data = Route.objects.filter(departure_location=departure_location,
+                                      arrival_location=arrival_location).values()
 
-    else:
-        form = SearchForm()
+    flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
+    route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
 
-    return render(request, 'searchFlight.html', {'form': form})
+    context = {
+        'flight_data': flight_data,
+        'route_data': route_data
+    }
+    return render(request, 'searchFlight.html', context)

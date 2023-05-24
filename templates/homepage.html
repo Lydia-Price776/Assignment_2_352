@@ -3,17 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Flights</title>
+    {% load static %}
 </head>
+
 <body>
 <h1>Flights Home Page</h1>
 
-{% load static %}
-<p><img src="{% static 'airplane-flight.jpg' %}"/> </p>
+<p><img src="{% static 'airplane-flight.jpg' %}"/></p>
+<form method="POST" action="{% url 'search' %}">
+    {% csrf_token %}
+    <label for="departure_date">Departure Date:</label>
+    <input type="date" id="departure_date" name="departure_date">
 
+    <label for="departure_location">From:</label>
+    <select id="departure_location" name="departure_location">
+        <option name="NZNE" value="NZNE">Dairy Flat, New Zealand (NZNE)</option>
+        <option name="YMHB" value="YMHB">Hobart, Australia (YMHB)</option>
+        <option name="NZRO" value="NZRO">Rotorua, New Zealand (NZRO)</option>
+        <option name="NZGB" value="NZGB">Great Barrier Island, New Zealand(NZGB)</option>
+        <option name="NZCI" value="NZCI">Tuuta, Chatham Islands (NZCI)</option>
+        <option name="NZLT" value="NZLT">Lake Tekapo, New Zealand (NZLT)</option>
+    </select>
 
-<button onclick="location.href = '/book'">Book a Flight</button>
-<button onclick="location.href = '/search'">Search Flight</button>
-<button onclick="location.href = '/manage'">Manage a Booking</button>
+    <label for="arrival_location">To:</label>
+    <select id="arrival_location" name="arrival_location">
+        <option name="NZNE" value="NZNE">Dairy Flat, New Zealand (NZNE)</option>
+        <option name="YMHB" value="YMHB">Hobart, Australia (YMHB)</option>
+        <option name="NZRO" value="NZRO">Rotorua, New Zealand (NZRO)</option>
+        <option name="NZGB" value="NZGB">Great Barrier Island, New Zealand(NZGB)</option>
+        <option name="NZCI" value="NZCI">Tuuta, Chatham Islands (NZCI)</option>
+        <option name="NZLT" value="NZLT">Lake Tekapo, New Zealand (NZLT)</option>
+    </select>
+    <input type="submit" value="Submit"/>
+</form>
+<p id="redir"></p>
+
 
 </body>
+
+<script>
+    function doit() {
+        const form = document.getElementById("curinput");
+        const departure_location = form.elements['departure_location'].value;
+        const arrival_location = form.elements['arrival_location'].value;
+        const departure_date = form.elements['departure_date'].value;
+        const token = form.elements['csrfmiddlewaretoken'].value
+
+        // Need this construct so that POST data are directed to
+        // /myapp/currency
+        const uri = "{% url 'search' %}"
+        document.getElementById("redir").innerHTML = uri + '<br>';
+
+        let xmlhttp = new XMLHttpRequest();
+        xmlhttp.onload = function () {
+            let recvText = xmlhttp.responseText;
+            document.getElementById("redir").innerHTML += recvText + '<br>'
+        }
+
+        let payload = new FormData();
+        payload.append('departure_date', departure_date)
+        payload.append('departure_location', departure_location)
+        payload.append('arrival_location', arrival_location)
+        payload.append('csrfmiddlewaretoken', token)
+
+        xmlhttp.open("POST", uri, true);
+        xmlhttp.send(payload);
+    }
+</script>
 </html>
