@@ -1,16 +1,13 @@
 import json
-
-from django.forms import model_to_dict
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
-from .forms import SearchForm
 from .models import Flight, Route
+from .forms import SearchForm
 
 
 def homepage(request):
-    return render(request, 'homepage.html', {'form': SearchForm()})
+    return render(request, 'homepage.html', {"form": SearchForm})
 
 
 def book(request):

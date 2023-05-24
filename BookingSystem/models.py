@@ -1,8 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
-
 class Plane(models.Model):
     plane_id = models.AutoField(primary_key=True)
     seats = models.IntegerField()
