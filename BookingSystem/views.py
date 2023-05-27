@@ -11,6 +11,7 @@ def homepage(request):
 
 
 def book(request):
+    print(request.POST)
     return render(request, 'bookings.html', {})
 
 

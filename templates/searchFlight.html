@@ -9,8 +9,8 @@
 
 <body>
 
-<form id = "booking-form" method="post" {% url 'book' %}>
-<button id ="book_button" type="submit" style="display: none">Book</button>
+<form id="booking_form" method="POST" action="{% url 'book' %}">
+    {% csrf_token %}
 </form>
 
 </body>
