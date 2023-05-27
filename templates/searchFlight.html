@@ -9,14 +9,14 @@
 
 <body>
 
-<pre id="flight_data"></pre>
-<button id="book_button" style="display: none" onclick="book_flight()">Book</button>
+<form id = "booking-form" method="post" {% url 'book' %}>
+<button id ="book_button" type="submit" style="display: none">Book</button>
+</form>
 
 </body>
 <script>
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
-    console.log(flight)
     view_data(flight, route)
 </script>
 </html>
