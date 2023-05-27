@@ -1,5 +1,5 @@
 function add_flight_data(i, flights, routes) {
-    let flight_data = document.createElement("label");
+    let flight_data = document.createElement('label');
     flight_data.htmlFor = `check_box${i}`;
     flight_data.id = `flight_${i}`
     flight_data.innerHTML += `Date: ${flights[i]['date']} <br>` +
@@ -20,7 +20,7 @@ function add_flight_data(i, flights, routes) {
 
 function enable_disable_button() {
     return function () {
-        let checkboxes = document.getElementsByName("check_box");
+        let checkboxes = document.getElementsByName('check_box');
         let enable = true;
 
         for (let i = 0; i < checkboxes.length; i++) {
@@ -36,7 +36,7 @@ function enable_disable_button() {
 
 function handleCheckbox() {
     return function (checkbox) {
-        let checkboxes = document.getElementsByName("check_box");
+        let checkboxes = document.getElementsByName('check_box');
         checkboxes.forEach(function (currentCheckbox) {
             if (currentCheckbox.id !== checkbox.target.id) {
                 currentCheckbox.checked = false;
@@ -48,7 +48,7 @@ function handleCheckbox() {
 function add_check_box(i, flights) {
     let check_box = document.createElement('input');
     check_box.type = 'checkbox';
-    check_box.name = "check_box";
+    check_box.name = 'check_box';
     check_box.id = `check_box${i}`;
     check_box.value = flights[i]['route_id'];
     check_box.onclick = function () {
@@ -59,11 +59,11 @@ function add_check_box(i, flights) {
 }
 
 function add_submit_button() {
-    let submit_button = document.createElement("button")
+    let submit_button = document.createElement('button')
     submit_button.type = 'submit';
     submit_button.id = 'booking_button';
     submit_button.innerHTML = 'Book';
-    document.getElementById("booking_form").appendChild(submit_button);
+    document.getElementById('booking_form').appendChild(submit_button);
 }
 
 function view_data(flights, routes) {
@@ -82,7 +82,7 @@ function view_data(flights, routes) {
             let flight_data = add_flight_data(i, flights, routes);
 
             flight_data.innerHTML += `</div><br>`
-            document.getElementById("booking_form").appendChild(flight_data)
+            document.getElementById('booking_form').appendChild(flight_data)
         }
         add_submit_button();
         document.getElementById('booking_button').disabled = true;
@@ -90,7 +90,7 @@ function view_data(flights, routes) {
         let no_match = document.createElement('div')
         no_match.innerHTML = `<h2>No Matches Found. </h2> <br>` +
             `<p> Please try entering a different date and make sure the arrival and departure locations are different </p>`
-        document.getElementById("booking_form").appendChild(no_match)
+        document.getElementById('booking_form"').appendChild(no_match)
     }
 }
 
