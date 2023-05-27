@@ -17,21 +17,21 @@ function add_flight_data(i, flights, routes) {
     }
     return flight_data;
 }
-//TODO: Sort this because it aint workin
+
 function enable_disable_button() {
     return function () {
         let checkboxes = document.getElementsByName("check_box");
-        checkboxes.every(function (current_check_box) {
-            if (current_check_box.checked) {
-                document.getElementById('booking_button').disabled = false;
-                return false;
-            } else {
-                document.getElementById('booking_button').disabled = true
-                return true;
-            }
-        })
+        let enable = true;
 
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                enable = false;
+                break;
+            }
+        }
+        document.getElementById('booking_button').disabled = enable;
     };
+
 }
 
 function handleCheckbox() {
@@ -51,9 +51,10 @@ function add_check_box(i, flights) {
     check_box.name = "check_box";
     check_box.id = `check_box${i}`;
     check_box.value = flights[i]['route_id'];
-    check_box.onclick = handleCheckbox()
-    check_box.onchange = enable_disable_button()
-
+    check_box.onclick = function () {
+        handleCheckbox();
+        enable_disable_button()();
+    };
     return check_box;
 }
 
@@ -82,18 +83,14 @@ function view_data(flights, routes) {
 
             flight_data.innerHTML += `</div><br>`
             document.getElementById("booking_form").appendChild(flight_data)
-
         }
         add_submit_button();
         document.getElementById('booking_button').disabled = true;
-
-
     } else {
         let no_match = document.createElement('div')
         no_match.innerHTML = `<h2>No Matches Found. </h2> <br>` +
             `<p> Please try entering a different date and make sure the arrival and departure locations are different </p>`
         document.getElementById("booking_form").appendChild(no_match)
-
     }
 }
 
