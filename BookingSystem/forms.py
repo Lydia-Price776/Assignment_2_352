@@ -16,7 +16,6 @@ class DateInput(forms.DateInput):
 
 class SearchForm(forms.Form):
     departure_date = forms.DateField(widget=DateInput)
-    # return_date = forms.DateField(widget=DateInput)
 
     departure_location = forms.CharField(label='From',
                                          widget=forms.Select(choices=Airports))
