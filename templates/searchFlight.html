@@ -9,15 +9,15 @@
 
 <body>
 
-<pre id="flight_data"></pre>
-<button id="book_button" style="display: none" onclick="book_flight()">Book</button>
+<form id="booking_form" method="POST" action="{% url 'book' %}">
+    {% csrf_token %}
+</form>
 
 </body>
 <script>
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
-    console.log(flight)
-    view_data(flight, route)
+    view_data(flight, route);
 </script>
 </html>
 

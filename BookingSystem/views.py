@@ -2,8 +2,8 @@ import json
 from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
-from .models import Flight, Route
-from .forms import SearchForm
+from .models import Flight, Route, Passenger, Bookings
+from .forms import SearchForm, BookingForm
 
 
 def homepage(request):
@@ -11,11 +11,41 @@ def homepage(request):
 
 
 def book(request):
-    return render(request, 'bookings.html', {})
+    flight_data = json.loads(request.POST['check_box'])
+    print(flight_data)
+    route_data = Route.objects.filter(route_id=flight_data["route_id"]).values()
+    route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
+    context = {
+        "form": BookingForm,
+        "flight_data": flight_data,
+        "route_data": route_data
+    }
+    request.session['flight'] = flight_data
+    request.session['route'] = route_data
+    return render(request, 'bookings.html', context)
 
 
 def manage_booking(request):
-    return render(request, 'manageBooking.html', {})
+    # if request.method == 'POST':
+    passenger = Passenger.objects.create(first_name=request.POST['first_name'],
+                                         last_name=request.POST['last_name'],
+                                         email=request.POST['email'],
+                                         phone_number=request.POST['phone_number'])
+
+    flight = request.session['flight']
+
+    flight_instance = Flight.objects.get(
+        flight_id=flight["flight_id"])
+
+    booking = Bookings.objects.create(passenger=passenger, flight=flight_instance)
+    passenger = vars(passenger)
+    booking = vars(booking)
+    passenger.pop('_state')
+    booking.pop('_state')
+    context = {"passenger": passenger,
+               "booking": booking}
+
+    return render(request, 'manageBooking.html', context)
 
 
 def search(request):
