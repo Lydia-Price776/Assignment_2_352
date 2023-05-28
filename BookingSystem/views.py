@@ -33,17 +33,16 @@ def manage_booking(request):
                                          phone_number=request.POST['phone_number'])
 
     flight = request.session['flight']
-
-    flight_instance = Flight.objects.get(
-        flight_id=flight["flight_id"])
-
+    flight_instance = Flight.objects.get(flight_id=flight["flight_id"])
     booking = Bookings.objects.create(passenger=passenger, flight=flight_instance)
     passenger = vars(passenger)
     booking = vars(booking)
     passenger.pop('_state')
     booking.pop('_state')
     context = {"passenger": passenger,
-               "booking": booking}
+               "booking": booking,
+               "flight": flight,
+               "route": request.session['route']}
 
     return render(request, 'manageBooking.html', context)
 
