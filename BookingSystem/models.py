@@ -11,9 +11,10 @@ class Plane(models.Model):
 
 
 class Passenger(models.Model):
+    passenger_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100, primary_key=True)
+    email = models.CharField(max_length=100)
     phone_number = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -57,7 +58,7 @@ class Flight(models.Model):
 
 
 class Bookings(models.Model):
-    booking_id = models.AutoField(primary_key=True)
+    booking_id = models.CharField(primary_key=True, max_length=8)
     passenger = models.ForeignKey(Passenger, related_name='passenger', on_delete=models.CASCADE)
     flight = models.ForeignKey(Flight, related_name='flight', on_delete=models.CASCADE)
 

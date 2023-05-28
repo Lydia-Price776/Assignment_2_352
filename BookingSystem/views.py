@@ -1,4 +1,7 @@
 import json
+import string
+import random
+
 from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -25,8 +28,16 @@ def book(request):
     return render(request, 'bookings.html', context)
 
 
+def generate_booking_ref():
+    new_ref = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    while Bookings.objects.filter(booking_id=new_ref).exists():
+        new_ref = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return new_ref
+
+
 def manage_booking(request):
     # if request.method == 'POST':
+
     passenger = Passenger.objects.create(first_name=request.POST['first_name'],
                                          last_name=request.POST['last_name'],
                                          email=request.POST['email'],
@@ -34,7 +45,7 @@ def manage_booking(request):
 
     flight = request.session['flight']
     flight_instance = Flight.objects.get(flight_id=flight["flight_id"])
-    booking = Bookings.objects.create(passenger=passenger, flight=flight_instance)
+    booking = Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger, flight=flight_instance)
     passenger = vars(passenger)
     booking = vars(booking)
     passenger.pop('_state')

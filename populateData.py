@@ -60,8 +60,8 @@ routes = [
 ]
 
 for ID, depatureTime, arrivalTime, stopOverTime, depatureLocation, arrivalLocation, stopoverLocation in routes:
-    Route.objects.create(route_id=ID, depature_time=depatureTime, arrival_time=arrivalTime, stopover_time=stopOverTime,
-                         depature_location=depatureLocation, arrival_location=arrivalLocation,
+    Route.objects.create(route_id=ID, departure_time=depatureTime, arrival_time=arrivalTime, stopover_time=stopOverTime,
+                         departure_location=depatureLocation, arrival_location=arrivalLocation,
                          stopover_location=stopoverLocation)
 
 
