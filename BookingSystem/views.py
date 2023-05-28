@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import Flight, Route
-from .forms import SearchForm
+from .forms import SearchForm, BookingForm
 
 
 def homepage(request):
@@ -11,8 +11,16 @@ def homepage(request):
 
 
 def book(request):
-    print(request.POST)
-    return render(request, 'bookings.html', {})
+    flight_data = json.loads(request.POST['check_box'])
+    print(flight_data)
+    route_data = Route.objects.filter(route_id=flight_data["route_id"]).values()
+    route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
+    context = {
+        "form": BookingForm,
+        "flight_data": flight_data,
+        "route_data": route_data
+    }
+    return render(request, 'bookings.html', context)
 
 
 def manage_booking(request):

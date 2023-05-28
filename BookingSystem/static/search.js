@@ -18,9 +18,16 @@ function add_flight_data(i, flights, routes) {
     return flight_data;
 }
 
-function enable_disable_button() {
-    return function () {
+
+function handleCheckboxAndButton() {
+    return function (checkbox) {
         let checkboxes = document.getElementsByName('check_box');
+        checkboxes.forEach(function (currentCheckbox) {
+            if (currentCheckbox.id !== checkbox.target.id) {
+                currentCheckbox.checked = false;
+            }
+        });
+
         let enable = true;
 
         for (let i = 0; i < checkboxes.length; i++) {
@@ -29,19 +36,8 @@ function enable_disable_button() {
                 break;
             }
         }
+
         document.getElementById('booking_button').disabled = enable;
-    };
-
-}
-
-function handleCheckbox() {
-    return function (checkbox) {
-        let checkboxes = document.getElementsByName('check_box');
-        checkboxes.forEach(function (currentCheckbox) {
-            if (currentCheckbox.id !== checkbox.target.id) {
-                currentCheckbox.checked = false;
-            }
-        });
     };
 }
 
@@ -50,11 +46,8 @@ function add_check_box(i, flights) {
     check_box.type = 'checkbox';
     check_box.name = 'check_box';
     check_box.id = `check_box${i}`;
-    check_box.value = flights[i]['route_id'];
-    check_box.onclick = function () {
-        handleCheckbox();
-        enable_disable_button()();
-    };
+    check_box.value = JSON.stringify(flights[i]);
+    check_box.onclick = handleCheckboxAndButton();
     return check_box;
 }
 
