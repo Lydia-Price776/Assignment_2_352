@@ -2,6 +2,7 @@ function display_booking(booking, passenger, flight, route) {
     let flight_data = format_flight(flight, route, "flight_booked");
     let booking_details = format_booking(booking,route);
     let passenger_details = format_passenger(passenger);
+    console.log(passenger)
 
     let booking_details_div = document.getElementById("booking_details");
     booking_details_div.appendChild(booking_details);

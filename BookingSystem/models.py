@@ -1,4 +1,5 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Plane(models.Model):
@@ -14,8 +15,8 @@ class Passenger(models.Model):
     passenger_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
-    phone_number = models.IntegerField(blank=True, null=True)
+    email = models.EmailField(max_length=100)
+    phone_number = PhoneNumberField(blank=True, null=True)
 
     class Meta:
         db_table = 'Passenger'

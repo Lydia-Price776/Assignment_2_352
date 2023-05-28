@@ -10,7 +10,7 @@
 <h1>Book a flight!</h1>
 <form id="booking_details" method="POST" action="{% url 'manage' %}">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_table }}
     <button type="submit" value="Submit">Book</button>
 </form>
 </body>

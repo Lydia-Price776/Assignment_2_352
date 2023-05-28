@@ -15,7 +15,6 @@ def homepage(request):
 
 def book(request):
     flight_data = json.loads(request.POST['check_box'])
-    print(flight_data)
     route_data = Route.objects.filter(route_id=flight_data["route_id"]).values()
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
     context = {
@@ -36,24 +35,34 @@ def generate_booking_ref():
 
 
 def manage_booking(request):
-    passenger = Passenger.objects.create(first_name=request.POST['first_name'],
-                                         last_name=request.POST['last_name'],
-                                         email=request.POST['email'],
-                                         phone_number=request.POST['phone_number'])
+    form = BookingForm(request.POST)
+    if form.is_valid():
+        print(request.POST)
+        passenger = Passenger.objects.create(first_name=request.POST['first_name'],
+                                             last_name=request.POST['last_name'],
+                                             email=request.POST['email'],
+                                             phone_number=request.POST['phone_number'])
 
-    flight = request.session['flight']
-    flight_instance = Flight.objects.get(flight_id=flight["flight_id"])
-    booking = Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger, flight=flight_instance)
-    passenger = vars(passenger)
-    booking = vars(booking)
-    passenger.pop('_state')
-    booking.pop('_state')
-    context = {"passenger": passenger,
-               "booking": booking,
-               "flight": flight,
-               "route": request.session['route']}
+        flight = request.session['flight']
+        flight_instance = Flight.objects.get(flight_id=flight["flight_id"])
+        booking = Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger,
+                                          flight=flight_instance)
+        passenger = vars(passenger)
+        booking = vars(booking)
+        passenger.pop('_state')
+        print(passenger)
+        passenger['phone_number'] = request.POST['phone_number']
+        booking.pop('_state')
+        context = {"passenger": passenger,
+                   "booking": booking,
+                   "flight": flight,
+                   "route": request.session['route']}
 
-    return render(request, 'manageBooking.html', context)
+        return render(request, 'manageBooking.html', context)
+    else:
+        print("Invalid Form")
+        print(form.errors)
+        return render(request, 'bookings.html', {'form': form})
 
 
 def search(request):
