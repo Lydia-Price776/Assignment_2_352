@@ -11,12 +11,12 @@
 <form id="booking_details" method="POST" action="{% url 'manage' %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit"/>
+    <button type="submit" value="Submit">Book</button>>
 </form>
 </body>
 <script>
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
-    display_flight(flight, route[0])
+    display_flight(flight, route[0]);
 </script>
 </html>

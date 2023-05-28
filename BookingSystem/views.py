@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
-from .models import Flight, Route
+from .models import Flight, Route, Passenger, Bookings
 from .forms import SearchForm, BookingForm
 
 
@@ -20,11 +20,28 @@ def book(request):
         "flight_data": flight_data,
         "route_data": route_data
     }
+    request.session['flight'] = flight_data
+    request.session['route'] = route_data
     return render(request, 'bookings.html', context)
 
 
 def manage_booking(request):
-    return render(request, 'manageBooking.html', {})
+    # if request.method == 'POST':
+    passenger = Passenger.objects.create(first_name=request.POST['first_name'],
+                                         last_name=request.POST['last_name'],
+                                         email=request.POST['email'],
+                                         phone_number=request.POST['phone_number'])
+
+    flight = request.session['flight']
+
+    flight_instance = Flight.objects.get(
+        flight_id=flight["flight_id"])
+
+    booking = Bookings.objects.create(passenger=passenger, flight=flight_instance)
+    context = {"passenger": passenger,
+               "booking": booking}
+
+    return render(request, 'manageBooking.html', context)
 
 
 def search(request):

@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage Booking</title>
+    {% load static %}
 </head>
+<script src="{% static 'manage.js' %}"></script>
+
 <body>
 <h1>Manage a booking!</h1>
 </body>
+<script>
+    booking = {{ booking|safe }};
+    passenger = {{ passenger|safe }};
+    console.log(booking);
+    console.log(passenger);
+
+</script>
 </html>
