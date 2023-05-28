@@ -36,8 +36,6 @@ def generate_booking_ref():
 
 
 def manage_booking(request):
-    # if request.method == 'POST':
-
     passenger = Passenger.objects.create(first_name=request.POST['first_name'],
                                          last_name=request.POST['last_name'],
                                          email=request.POST['email'],
