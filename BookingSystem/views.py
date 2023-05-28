@@ -38,6 +38,10 @@ def manage_booking(request):
         flight_id=flight["flight_id"])
 
     booking = Bookings.objects.create(passenger=passenger, flight=flight_instance)
+    passenger = vars(passenger)
+    booking = vars(booking)
+    passenger.pop('_state')
+    booking.pop('_state')
     context = {"passenger": passenger,
                "booking": booking}
 
