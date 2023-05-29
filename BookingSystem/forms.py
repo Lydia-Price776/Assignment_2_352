@@ -1,5 +1,4 @@
 from django import forms
-from django.core.validators import validate_email
 from phonenumber_field.formfields import PhoneNumberField
 
 Airports = [
@@ -29,5 +28,4 @@ class BookingForm(forms.Form):
     last_name = forms.CharField(label='Last Name')
     email = forms.EmailField(label='Email Address')
     phone_number = PhoneNumberField(label='Phone Number', required=False)
-
 
