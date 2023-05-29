@@ -50,6 +50,7 @@ function format_passenger(passenger) {
 }
 
 function display_error() {
+
     let booking_details_div = document.getElementById("booking_details");
     let no_booking_div = document.createElement('div');
     no_booking_div.id = "booking_data";
@@ -69,9 +70,9 @@ function create_cancel_button() {
 function create_cancel_data(booking_id) {
     let cancel_id = document.createElement('input');
     cancel_id.type = 'hidden';
-    cancel_id.id = 'cancel_booking';
-    cancel_id.name = 'cancel_booking';
-    cancel_id.value = booking_id
+    cancel_id.id = 'cancel_data';
+    cancel_id.name = 'cancel_data';
+    cancel_id.value = booking_id;
     return cancel_id;
 }
 

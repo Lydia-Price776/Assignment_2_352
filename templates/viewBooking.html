@@ -12,7 +12,6 @@
 <div id="booking_details"></div>
 <form id="cancel_booking" method="POST" action="{% url 'cancel' %}">
     {% csrf_token %}
-    <input type="hidden" name="cancel_data" id="cancel_data"/>
 </form>
 
 </body>
