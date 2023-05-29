@@ -1,4 +1,5 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Plane(models.Model):
@@ -11,10 +12,11 @@ class Plane(models.Model):
 
 
 class Passenger(models.Model):
+    passenger_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100, primary_key=True)
-    phone_number = models.IntegerField(blank=True, null=True)
+    email = models.EmailField(max_length=100)
+    phone_number = PhoneNumberField(blank=True, null=True)
 
     class Meta:
         db_table = 'Passenger'
@@ -51,13 +53,14 @@ class Flight(models.Model):
     route = models.ForeignKey(Route, related_name='route', on_delete=models.CASCADE)
     date = models.DateField()
     price = models.FloatField()
+    seats_available = models.IntegerField()
 
     class Meta:
         db_table = 'Flight'
 
 
 class Bookings(models.Model):
-    booking_id = models.AutoField(primary_key=True)
+    booking_id = models.CharField(primary_key=True, max_length=8)
     passenger = models.ForeignKey(Passenger, related_name='passenger', on_delete=models.CASCADE)
     flight = models.ForeignKey(Flight, related_name='flight', on_delete=models.CASCADE)
 

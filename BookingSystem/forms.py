@@ -1,4 +1,5 @@
 from django import forms
+from phonenumber_field.formfields import PhoneNumberField
 
 Airports = [
     ('NZNE', 'Dairy Flat, New Zealand (NZNE)'),
@@ -25,5 +26,6 @@ class SearchForm(forms.Form):
 class BookingForm(forms.Form):
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
-    email = forms.CharField(label='Email Address')
-    phone_number = forms.CharField(label='Phone Number', required=False)
+    email = forms.EmailField(label='Email Address')
+    phone_number = PhoneNumberField(label='Phone Number', required=False)
+

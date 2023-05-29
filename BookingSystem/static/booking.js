@@ -1,6 +1,17 @@
 function display_flight(flight, route) {
     let flight_data = display_flight_data(flight, route, "flight_to_book")
     let form = document.getElementById('booking_details');
+    let booking_button = document.getElementById('book_button');
+    console.log(flight['seats_available'])
+    if (flight['seats_available'] > 0) {
+        booking_button.disabled = false;
+        booking_button.title = '';
+    } else {
+        booking_button.disabled = true;
+        booking_button.title = "No seats left on this flight";
+
+    }
+
     form.insertBefore(flight_data, form.firstChild);
 }
 
