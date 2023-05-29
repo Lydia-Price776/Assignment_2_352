@@ -1,10 +1,10 @@
 function display_booking(booking, passenger, flight, route) {
+    let booking_details_div = document.getElementById("booking_details");
+
     let flight_data = format_flight(flight, route, "flight_booked");
-    let booking_details = format_booking(booking,route);
+    let booking_details = format_booking(booking, route);
     let passenger_details = format_passenger(passenger);
     console.log(passenger)
-
-    let booking_details_div = document.getElementById("booking_details");
     booking_details_div.appendChild(booking_details);
     booking_details_div.appendChild(passenger_details);
     booking_details_div.appendChild(flight_data);
@@ -47,4 +47,14 @@ function format_passenger(passenger) {
     }
     return passenger_data;
 
+}
+
+function display_error() {
+
+    let booking_details_div = document.getElementById("booking_details");
+    let no_booking_div = document.createElement('div');
+    no_booking_div.id = "booking_data";
+    no_booking_div.innerHTML += `Something went wrong making your booking. ` +
+        `Please contact our helpdesk during business hours`;
+    booking_details_div.appendChild(no_booking_div);
 }

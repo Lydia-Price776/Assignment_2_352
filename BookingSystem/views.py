@@ -15,11 +15,8 @@ def homepage(request):
 
 def book(request):
     flight_check_box = json.loads(request.POST['check_box'])
-    print(flight_check_box)
     flight_data = Flight.objects.filter(flight_id=flight_check_box['flight_id']).values()
-    print(flight_data)
     route_data = Route.objects.filter(route_id=flight_check_box['route_id']).values()
-
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
 
@@ -28,7 +25,8 @@ def book(request):
         "flight_data": flight_data,
         "route_data": route_data
     }
-    request.session['flight'] = flight_check_box  # TODO need to send the updated flight_data some how, could just send the flight ID and query?
+    request.session['flight'] = flight_check_box[
+        'flight_id']
     request.session['route'] = route_data
     return render(request, 'bookings.html', context)
 
@@ -41,15 +39,15 @@ def generate_booking_ref():
 
 
 def manage_booking(request):
-    form = BookingForm(request.POST)
-    if form.is_valid():
+    flight = request.session['flight']
+    flight_instance = Flight.objects.get(flight_id=flight)
+    if flight_instance.seats_available > 0:
+
         passenger = Passenger.objects.create(first_name=request.POST['first_name'],
                                              last_name=request.POST['last_name'],
                                              email=request.POST['email'],
                                              phone_number=request.POST['phone_number'])
 
-        flight = request.session['flight']
-        flight_instance = Flight.objects.get(flight_id=flight["flight_id"])
         flight_instance.seats_available = flight_instance.seats_available - 1
         flight_instance.save()
         booking = Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger,
@@ -61,12 +59,18 @@ def manage_booking(request):
         passenger.pop('_state')
         passenger['phone_number'] = request.POST['phone_number']
         booking.pop('_state')
+
         context = {"passenger": passenger,
                    "booking": booking,
                    "flight": flight_data,
                    "route": request.session['route']}
+    else:
+        context = {"passenger": {'error': 'error'},
+                   "booking": {'error': 'error'},
+                   "flight": {'error': 'error'},
+                   "route": {'error': 'error'}}
 
-        return render(request, 'manageBooking.html', context)
+    return render(request, 'manageBooking.html', context)
 
 
 def search(request):

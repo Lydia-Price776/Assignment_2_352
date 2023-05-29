@@ -12,11 +12,18 @@
 <div id="booking_details"></div>
 </body>
 <script>
+
     booking ={{ booking|safe }};
     passenger =  {{ passenger|safe }};
     flight = {{ flight|safe }};
     route ={{ route|safe }};
-    display_booking(booking, passenger, flight, route[0]);
+    if ('error' in booking) {
+        display_error()
+    }else {
+        display_booking(booking, passenger, flight, route[0]);
+    }
+
+
 
 </script>
 </html>
