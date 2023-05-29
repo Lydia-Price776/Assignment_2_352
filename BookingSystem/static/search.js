@@ -83,7 +83,7 @@ function view_data(flights, routes) {
         let no_match = document.createElement('div')
         no_match.innerHTML = `<h2>No Matches Found. </h2> <br>` +
             `<p> Please try entering a different date and make sure the arrival and departure locations are different </p>`
-        document.getElementById('booking_form"').appendChild(no_match)
+        document.getElementById('booking_form').appendChild(no_match)
     }
 }
 

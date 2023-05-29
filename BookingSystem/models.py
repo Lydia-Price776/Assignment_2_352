@@ -53,6 +53,7 @@ class Flight(models.Model):
     route = models.ForeignKey(Route, related_name='route', on_delete=models.CASCADE)
     date = models.DateField()
     price = models.FloatField()
+    seats_available = models.IntegerField()
 
     class Meta:
         db_table = 'Flight'

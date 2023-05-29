@@ -65,10 +65,10 @@ for ID, depatureTime, arrivalTime, stopOverTime, depatureLocation, arrivalLocati
                          stopover_location=stopoverLocation)
 
 
-def daily_flight(plane_id, route_id, date, price):
+def daily_flight(plane_id, route_id, date, price, seats):
     days = 1
     for x in range(365):
-        Flight(plane=plane_id, route=route_id, date=date, price=price).save()
+        Flight(plane=plane_id, route=route_id, date=date, price=price, seats_available=seats).save()
         days += 1
         if days <= 5:
             date = date + datetime.timedelta(1)
@@ -77,10 +77,10 @@ def daily_flight(plane_id, route_id, date, price):
             days = 1
 
 
-def twice_weekly_flight(plane_id, route_id, date, price):
+def twice_weekly_flight(plane_id, route_id, date, price, seats):
     days = 2
     for x in range(112):
-        Flight(plane=plane_id, route=route_id, date=date, price=price).save()
+        Flight(plane=plane_id, route=route_id, date=date, price=price, seats_available=seats).save()
         days += 3
         if days <= 5:
             date = date + datetime.timedelta(3)
@@ -89,10 +89,10 @@ def twice_weekly_flight(plane_id, route_id, date, price):
             days = 2
 
 
-def three_weekly_flight(plane_id, route_id, date, price):
+def three_weekly_flight(plane_id, route_id, date, price, seats):
     days = 1
     for x in range(55):
-        Flight(plane=plane_id, route=route_id, date=date, price=price).save()
+        Flight(plane=plane_id, route=route_id, date=date, price=price, seats_available=seats).save()
         days += 2
         if days <= 5:
             date = date + datetime.timedelta(2)
@@ -101,48 +101,50 @@ def three_weekly_flight(plane_id, route_id, date, price):
             days = 1
 
 
-def weekly_flight(plane_id, route_id, date, price):
+def weekly_flight(plane_id, route_id, date, price, seats):
     for x in range(55):
-        Flight(plane=plane_id, route=route_id, date=date, price=price).save()
+        Flight(plane=plane_id, route=route_id, date=date, price=price, seats_available=seats).save()
         date = date + datetime.timedelta(7)
 
 
 # DAIRY FLAT TO HOBART
-weekly_flight(Plane.objects.get(plane_id=1), Route.objects.get(route_id='DFHO06'), datetime.date(2023, 5, 26), 449.99)
+weekly_flight(Plane.objects.get(plane_id=1), Route.objects.get(route_id='DFHO06'), datetime.date(2023, 5, 26), 449.99,
+              6)
 
 # HOBART TO DAIRY FLAT
-weekly_flight(Plane.objects.get(plane_id=1), Route.objects.get(route_id='HODF14'), datetime.date(2023, 5, 28), 449.99)
+weekly_flight(Plane.objects.get(plane_id=1), Route.objects.get(route_id='HODF14'), datetime.date(2023, 5, 28), 449.99,
+              6)
 
 # DAIRY FLAT TO ROTORUA 0600
-daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='DFRO06'), datetime.date(2023, 5, 22), 69.99)
+daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='DFRO06'), datetime.date(2023, 5, 22), 69.99, 4)
 
 # ROTORUA TO DAIRY FLAT 1200
-daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='RODF12'), datetime.date(2023, 5, 22), 69.99)
+daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='RODF12'), datetime.date(2023, 5, 22), 69.99, 4)
 
 # DAIRY FLAT TO ROTORUA 1600
-daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='DFRO16'), datetime.date(2023, 5, 22), 69.99)
+daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='DFRO16'), datetime.date(2023, 5, 22), 69.99, 4)
 
 # ROTORUA TO DAIRY FLAT 1900
-daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='RODF19'), datetime.date(2023, 5, 22), 69.99)
+daily_flight(Plane.objects.get(plane_id=2), Route.objects.get(route_id='RODF19'), datetime.date(2023, 5, 22), 69.99, 4)
 
 # DAIRY FLAT TO GREAT BARRIER
 three_weekly_flight(Plane.objects.get(plane_id=3), Route.objects.get(route_id='DFGB09'), datetime.date(2023, 5, 22),
-                    129.49)
+                    129.49, 4)
 
 # GREAT BARRIER TO DAIRY FLAT
 three_weekly_flight(Plane.objects.get(plane_id=3), Route.objects.get(route_id='GBDF09'), datetime.date(2023, 5, 23),
-                    129.49)
+                    129.49, 4)
 
 # DAIRY FLAT TO CHATHAMS
 twice_weekly_flight(Plane.objects.get(plane_id=4), Route.objects.get(route_id='DFCI10'), datetime.date(2023, 5, 23),
-                    334.99)
+                    334.99, 5)
 
 # CHATHAMS TO DAIRY FLAT
 twice_weekly_flight(Plane.objects.get(plane_id=4), Route.objects.get(route_id='CIDF10'), datetime.date(2023, 5, 24),
-                    334.99)
+                    334.99, 5)
 
 #  DAIRY FLAT TO LAKE TEKAPO
-weekly_flight(Plane.objects.get(plane_id=5), Route.objects.get(route_id='DFLT13'), datetime.date(2023, 5, 22), 95.49)
+weekly_flight(Plane.objects.get(plane_id=5), Route.objects.get(route_id='DFLT13'), datetime.date(2023, 5, 22), 95.49, 5)
 
 # LAKE TEKAPO TO  DAIRY FLAT
-weekly_flight(Plane.objects.get(plane_id=5), Route.objects.get(route_id='LTDF13'), datetime.date(2023, 5, 23), 95.49)
+weekly_flight(Plane.objects.get(plane_id=5), Route.objects.get(route_id='LTDF13'), datetime.date(2023, 5, 23), 95.49, 5)
