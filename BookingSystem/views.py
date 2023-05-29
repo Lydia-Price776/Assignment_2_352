@@ -52,10 +52,12 @@ def manage_booking(request):
         flight_instance.save()
         booking = Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger,
                                           flight=flight_instance)
-        flight_data = vars(flight_instance)
+        flight_data = Flight.objects.filter(flight_id=flight).values()
         flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
+
         passenger = vars(passenger)
         booking = vars(booking)
+
         passenger.pop('_state')
         passenger['phone_number'] = request.POST['phone_number']
         booking.pop('_state')
@@ -70,7 +72,7 @@ def manage_booking(request):
                    "flight": {'error': 'error'},
                    "route": {'error': 'error'}}
 
-    return render(request, 'manageBooking.html', context)
+    return render(request, 'viewBooking.html', context)
 
 
 def search(request):
@@ -94,3 +96,15 @@ def search(request):
         'route_data': route_data
     }
     return render(request, 'searchFlight.html', context)
+
+
+def cancel_booking(request):
+    booking_to_cancel = request.POST.get('cancel_data')
+    to_delete = Bookings.objects.filter(booking_id=booking_to_cancel)
+    if to_delete.exists():
+        to_delete.delete()
+        context = {'outcome': 'success'}
+    else:
+        context = {'outcome': 'error'}
+
+    return render(request, 'cancelBooking.html', context)

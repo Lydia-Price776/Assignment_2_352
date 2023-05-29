@@ -5,11 +5,16 @@
     <title>Manage Booking</title>
     {% load static %}
 </head>
-<script src="{% static 'manage.js' %}"></script>
+<script src="{% static 'view_booking.js' %}"></script>
 
 <body>
-<h1>Manage a booking!</h1>
+<h1>Your Booking:</h1>
 <div id="booking_details"></div>
+<form id="cancel_booking" method="POST" action="{% url 'cancel' %}">
+    {% csrf_token %}
+    <input type="hidden" name="cancel_data" id="cancel_data"/>
+</form>
+
 </body>
 <script>
 
@@ -19,11 +24,10 @@
     route ={{ route|safe }};
     if ('error' in booking) {
         display_error()
-    }else {
-        display_booking(booking, passenger, flight, route[0]);
+    } else {
+        display_booking(booking, passenger, flight[0], route[0]);
+        add_cancel_option(booking['booking_id']);
     }
-
-
 
 </script>
 </html>

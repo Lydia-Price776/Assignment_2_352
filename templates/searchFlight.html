@@ -5,9 +5,10 @@
     <title>Search for a Flight</title>
     {% load static %}
 </head>
-<script src="{% static 'search.js' %}"></script>
+<script src="{% static 'search_flight.js' %}"></script>
 
 <body>
+<h1>Search Results:</h1>
 
 <form id="booking_form" method="POST" action="{% url 'book' %}">
     {% csrf_token %}
