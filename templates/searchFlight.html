@@ -8,7 +8,6 @@
 <script src="{% static 'search_flight.js' %}"></script>
 
 <body>
-<h1>Search Results:</h1>
 
 <form id="booking_form" method="POST" action="{% url 'book' %}">
     {% csrf_token %}
@@ -19,7 +18,8 @@
 
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
-    view_data(flight, route);
+    airports = {{ airports|safe }};
+    view_data(flight, route, airports);
 
 </script>
 </html>

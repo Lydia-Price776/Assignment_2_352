@@ -5,7 +5,7 @@ import random
 from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
-from .models import Flight, Route, Passenger, Bookings
+from .models import Flight, Route, Passenger, Bookings, Airport
 from .forms import SearchFlightForm, BookingForm, SearchBookingForm
 
 
@@ -21,6 +21,7 @@ def book(request):
     flight_check_box = json.loads(request.POST['check_box'])
     flight_data = Flight.objects.filter(flight_id=flight_check_box['flight_id']).values()
     route_data = Route.objects.filter(route_id=flight_check_box['route_id']).values()
+
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
 
@@ -120,12 +121,15 @@ def search(request):
     route_data = Route.objects.filter(departure_location=departure_location,
                                       arrival_location=arrival_location).values()
 
+    airport_departure = Airport.objects.filter(code=departure_location).values()[0]['name']
+    airport_arrival = Airport.objects.filter(code=arrival_location).values()[0]['name']
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
 
     context = {
         'flight_data': flight_data,
-        'route_data': route_data
+        'route_data': route_data,
+        'airports': {'departure': airport_departure, 'arrival': airport_arrival}
     }
     return render(request, 'searchFlight.html', context)
 
