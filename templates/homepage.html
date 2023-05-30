@@ -12,10 +12,16 @@
 <p><img src="{% static 'airplane-flight.jpg' %}"/></p>
 <form method="POST" action="{% url 'search' %}">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form_flight.as_table }}
     <input type="submit" value="Submit"/>
 </form>
+<form method="POST" action="{% url 'view' %}">
+    {% csrf_token %}
+    {{ form_booking.as_table }}
 
+
+    <input type="submit" value="Submit"/>
+</form>
 </body>
 
 

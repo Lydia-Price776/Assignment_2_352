@@ -15,7 +15,7 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
-class SearchForm(forms.Form):
+class SearchFlightForm(forms.Form):
     departure_date = forms.DateField(widget=DateInput)
     departure_location = forms.CharField(label='From',
                                          widget=forms.Select(choices=Airports))
@@ -23,9 +23,12 @@ class SearchForm(forms.Form):
                                        widget=forms.Select(choices=Airports))
 
 
+class SearchBookingForm(forms.Form):
+    booking_ref = forms.CharField(label='Booking Reference')
+
+
 class BookingForm(forms.Form):
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
     email = forms.EmailField(label='Email Address')
     phone_number = PhoneNumberField(label='Phone Number', required=False)
-
