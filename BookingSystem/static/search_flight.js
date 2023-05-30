@@ -1,4 +1,5 @@
 function add_flight_data(i, flights, routes) {
+
     let flight_data = document.createElement('label');
     flight_data.htmlFor = `check_box${i}`;
     flight_data.id = `flight_${i}`
@@ -59,14 +60,19 @@ function add_submit_button() {
     document.getElementById('booking_form').appendChild(submit_button);
 }
 
-function view_data(flights, routes) {
+function view_data(flights, routes, airports) {
+    let heading_div = document.createElement("heading");
+    heading_div.innerHTML += `<h1>Search Results:</h1>` +
+        `<h2>From ${airports['departure']} to ${airports['arrival']}</h2>`;
+
+    document.getElementById('booking_form').appendChild(heading_div);
 
     if (flights.length > 0) {
         let match = document.createElement('div')
         if (flights.length === 1) {
-            match.innerHTML += `<h2>${flights.length} Match Found </h2>`
+            match.innerHTML += `<h3>${flights.length} Match Found </h3>`
         } else {
-            match.innerHTML += `<h2>${flights.length} Matches Found </h2>`
+            match.innerHTML += `<h3>${flights.length} Matches Found </h3>`
         }
         document.getElementById('booking_form').appendChild(match)
         for (const i in flights) {
@@ -81,7 +87,7 @@ function view_data(flights, routes) {
         document.getElementById('booking_button').disabled = true;
     } else {
         let no_match = document.createElement('div')
-        no_match.innerHTML = `<h2>No Matches Found. </h2> <br>` +
+        no_match.innerHTML = `<h3>No Matches Found. </h3>` +
             `<p> Please try entering a different date and make sure the arrival and departure locations are different </p>`
         document.getElementById('booking_form').appendChild(no_match)
     }

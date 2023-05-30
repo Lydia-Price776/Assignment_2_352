@@ -5,7 +5,7 @@
     <title>Search for a Flight</title>
     {% load static %}
 </head>
-<script src="{% static 'search.js' %}"></script>
+<script src="{% static 'search_flight.js' %}"></script>
 
 <body>
 
@@ -18,7 +18,8 @@
 
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
-    view_data(flight, route);
+    airports = {{ airports|safe }};
+    view_data(flight, route, airports);
 
 </script>
 </html>

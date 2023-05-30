@@ -49,12 +49,42 @@ function format_passenger(passenger) {
 
 }
 
-function display_error() {
-
+function display_error(booking) {
     let booking_details_div = document.getElementById("booking_details");
     let no_booking_div = document.createElement('div');
     no_booking_div.id = "booking_data";
-    no_booking_div.innerHTML += `Something went wrong making your booking. ` +
-        `Please contact our helpdesk during business hours`;
+    if (booking['error'] === 'unable to make booking') {
+        no_booking_div.innerHTML += `Something went wrong making your booking. ` +
+            `Please contact our helpdesk during business hours`;
+    } else {
+        no_booking_div.innerHTML += `Unable to retrieve your booking. Please enter a valid booking reference or` +
+            ` contact our helpdesk during business hours`;
+    }
     booking_details_div.appendChild(no_booking_div);
+
+}
+
+function create_cancel_button() {
+    let cancel_button = document.createElement('button');
+    cancel_button.id = 'cancel_button';
+    cancel_button.type = 'submit';
+    cancel_button.innerHTML = 'Cancel Booking';
+    return cancel_button;
+}
+
+function create_cancel_data(booking_id) {
+    let cancel_id = document.createElement('input');
+    cancel_id.type = 'hidden';
+    cancel_id.id = 'cancel_data';
+    cancel_id.name = 'cancel_data';
+    cancel_id.value = booking_id;
+    return cancel_id;
+}
+
+function add_cancel_option(booking_id) {
+    let cancel_form = document.getElementById("cancel_booking");
+    let cancel_button = create_cancel_button();
+    let cancel_id = create_cancel_data(booking_id);
+    cancel_form.appendChild(cancel_id)
+    cancel_form.appendChild(cancel_button)
 }

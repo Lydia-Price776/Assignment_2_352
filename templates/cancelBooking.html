@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cancel Booking</title>
+    {% load static %}
+</head>
+<script src="{% static 'cancel_booking.js' %}"></script>
+
+<body>
+<h1>Cancel Your Booking</h1>
+<div id="outcome"></div>
+</body>
+<script>
+    outcome = '{{ outcome|safe }}';
+    console.log(outcome)
+    display_outcome(outcome)
+</script>
+</html>
