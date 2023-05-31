@@ -18,7 +18,6 @@ def homepage(request):
 
 
 def book(request):
-    print(request.POST)
     flight_check_box = json.loads(request.POST['check_box'])
     flight_data = Flight.objects.filter(flight_id=flight_check_box['flight_id']).values()
     route_data = Route.objects.filter(route_id=flight_check_box['route_id']).values()
@@ -48,19 +47,34 @@ def generate_booking_ref():
 
 
 def view_booking(request):
+    context = {"passenger": {'error': 'error'},
+               "booking": {'error': 'unable to make booking'},
+               "flight": {'error': 'error'},
+               "route": {'error': 'error'}}
+
     if 'booking_ref' in request.POST:
-        context = get_booking(request)
+        if Bookings.objects.filter(booking_id=request.POST['booking_ref']).exists():
+            booking = vars(Bookings.objects.get(booking_id=request.POST['booking_ref']))
+            context = get_booking(request, booking)
     else:
         flight_id = request.session['flight']
-        flight_instance = Flight.objects.get(flight_id=flight_id)
-        if flight_instance.seats_available > 0:
+        if Bookings.objects.filter(passenger_id__first_name=request.POST['first_name'],
+                                   passenger_id__last_name=request.POST['last_name'],
+                                   flight_id=flight_id).exists():
+            passengers = Passenger.objects.filter(first_name=request.POST['first_name'],
+                                                  last_name=request.POST['last_name'])
+            flight = Flight.objects.get(flight_id=flight_id)
 
-            context = make_booking(flight_id, flight_instance, request)
+            for passenger in passengers:
+
+                if Bookings.objects.filter(passenger_id=passenger, flight_id=flight).exists():
+                    booking = vars(Bookings.objects.get(passenger_id=passenger, flight_id=flight))
+                    context = get_booking(request, booking)
         else:
-            context = {"passenger": {'error': 'error'},
-                       "booking": {'error': 'unable to make booking'},
-                       "flight": {'error': 'error'},
-                       "route": {'error': 'error'}}
+
+            flight_instance = Flight.objects.get(flight_id=flight_id)
+            if flight_instance.seats_available > 0:
+                context = make_booking(flight_id, flight_instance, request)
 
     return render(request, 'viewBooking.html', context)
 
@@ -88,28 +102,20 @@ def make_booking(flight, flight_instance, request):
     return context
 
 
-def get_booking(request):
-    if Bookings.objects.filter(booking_id=request.POST['booking_ref']).exists():
-        booking = vars(Bookings.objects.get(booking_id=request.POST['booking_ref']))
-        passenger = vars(Passenger.objects.get(passenger_id=booking['passenger_id']))
-        flight = Flight.objects.filter(flight_id=booking['flight_id']).values()
-        route = Route.objects.filter(route_id=flight[0]['route_id']).values()
-        passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
-                                    str(passenger['phone_number'].national_number)
-        flight = json.dumps(list(flight), cls=DjangoJSONEncoder)
-        route = json.dumps(list(route), cls=DjangoJSONEncoder)
-        booking.pop('_state')
-        passenger.pop('_state')
-        context = {"passenger": passenger,
-                   "booking": booking,
-                   "flight": flight,
-                   "route": route}
-    else:
-        context = {"passenger": {'error': 'error'},
-                   "booking": {'error': 'booking not found'},
-                   "flight": {'error': 'error'},
-                   "route": {'error': 'error'}}
-    return context
+def get_booking(request, booking):
+    passenger = vars(Passenger.objects.get(passenger_id=booking['passenger_id']))
+    flight = Flight.objects.filter(flight_id=booking['flight_id']).values()
+    route = Route.objects.filter(route_id=flight[0]['route_id']).values()
+    passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
+                                str(passenger['phone_number'].national_number)
+    flight = json.dumps(list(flight), cls=DjangoJSONEncoder)
+    route = json.dumps(list(route), cls=DjangoJSONEncoder)
+    booking.pop('_state')
+    passenger.pop('_state')
+    return {"passenger": passenger,
+            "booking": booking,
+            "flight": flight,
+            "route": route}
 
 
 def search(request):
