@@ -24,8 +24,12 @@ function add_flight_data(i, flights, routes) {
         cell.textContent = item;
         row_element.appendChild(cell);
     }
-    row_element.insertAdjacentHTML("beforeend", add_check_box(i, flights).outerHTML);
-    console.log(add_check_box(i, flights))
+
+
+    let check_box = add_check_box(i, flights);
+    let cell = document.createElement('td');
+    cell.appendChild(check_box);
+    row_element.appendChild(cell);
     table_row.appendChild(row_element);
 
 
@@ -60,8 +64,8 @@ function add_check_box(i, flights) {
     check_box.type = 'checkbox';
     check_box.name = 'check_box';
     check_box.id = `check_box${i}`;
-    check_box.value = JSON.stringify(flights[i]);
     check_box.onclick = handleCheckboxAndButton();
+    check_box.value = JSON.stringify(flights[i]);
     return check_box;
 }
 
@@ -71,6 +75,7 @@ function add_submit_button() {
     submit_button.id = 'booking_button';
     submit_button.innerHTML = 'Book';
     submit_button.classList.add("btn", "btn-primary");
+    submit_button.disabled = true;
     document.getElementById('button').appendChild(submit_button);
 }
 
