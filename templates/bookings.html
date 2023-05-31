@@ -65,7 +65,11 @@
         <button id="book_button" type="submit" style="width: 200px" class="btn btn-primary" value="Submit">
             Book
         </button>
-
+    </form>
+    <br>
+    <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
     </form>
 </div>
 {% block content %}

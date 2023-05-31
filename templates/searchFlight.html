@@ -21,8 +21,6 @@
         <div class="text-white">
             <h1 class="mb-3">Search Results</h1>
             <h4 id="heading" class="mb-3"></h4>
-
-
         </div>
     </div>
 
@@ -36,7 +34,10 @@
 
         <table class="table" id="table"></table>
         <div id="button" class="container text-center"></div>
-
+    </form>
+    <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
     </form>
 </div>
 {% block content %}

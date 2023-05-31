@@ -30,24 +30,28 @@
 
 </div>
 
-    <form id="cancel_booking" class="container text-center" method="POST" action="{% url 'cancel' %}">
-        {% csrf_token %}
-        <br>
-        <div id="booking_ref" class="text-center"></div>
-        <div class="row">
-            <div class="col">
-                <div id="flight_details_header"></div>
-                <div id="flight_details"></div>
-            </div>
-            <div class="col">
-
-                <div id="passenger_details_header"></div>
-                <div id="passenger_details"></div>
-            </div>
+<form id="cancel_booking" class="container text-center" method="POST" action="{% url 'cancel' %}">
+    {% csrf_token %}
+    <br>
+    <div id="booking_ref" class="text-center"></div>
+    <div class="row">
+        <div class="col">
+            <div id="flight_details_header"></div>
+            <div id="flight_details"></div>
         </div>
-        <div id="cancel_button"></div>
-    </form>
+        <div class="col">
 
+            <div id="passenger_details_header"></div>
+            <div id="passenger_details"></div>
+        </div>
+    </div>
+    <div id="cancel_button"></div>
+</form>
+<br>
+<form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
+</form>
 </body>
 <script>
 
