@@ -2,18 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search for a Flight</title>
     {% load static %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>{% block Search %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 <script src="{% static 'search_flight.js' %}"></script>
 
 <body>
+<div class="p-5 text-center bg-image"
+     style="background-image: url({% static 'airplane-flight.jpeg' %});
+             background-size: cover;
+             background-position: center;
+             height: 200px;">
 
-<form id="booking_form" method="POST" action="{% url 'book' %}">
-    {% csrf_token %}
-</form>
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <h1 class="mb-3">Search Results</h1>
+            <h4 id="heading" class="mb-3"></h4>
+
+
+        </div>
+    </div>
+
+</div>
+
+<div class="container ">
+    <div class="text-center" id="matches"></div>
+
+    <form id="booking_form" method="POST" action="{% url 'book' %}">
+        {% csrf_token %}
+
+        <table class="table" id="table"></table>
+        <div id="button" class="container text-center"></div>
+
+    </form>
+</div>
+{% block content %}
+{% endblock %}
 
 </body>
 <script>
