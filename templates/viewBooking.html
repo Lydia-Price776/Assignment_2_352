@@ -2,18 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Booking</title>
+    <title>View Booking</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block view %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     {% load static %}
 </head>
 <script src="{% static 'view_booking.js' %}"></script>
 
 <body>
-<h1>Your Booking:</h1>
-<div id="booking_details"></div>
-<form id="cancel_booking" method="POST" action="{% url 'cancel' %}">
-    {% csrf_token %}
-</form>
+<div class="p-5 text-center bg-image"
+     style="background-image: url({% static 'airplane-flight.jpeg' %});
+             background-size: cover;
+             background-position: center;
+             height: 200px;">
 
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <h1 class="mb-3">Your Booking Details</h1>
+
+        </div>
+    </div>
+
+</div>
+
+<form id="cancel_booking" class="container text-center" method="POST" action="{% url 'cancel' %}">
+    {% csrf_token %}
+    <br>
+    <div id="booking_ref" class="text-center"></div>
+    <div class="row">
+        <div class="col">
+            <div id="flight_details_header"></div>
+            <div id="flight_details"></div>
+        </div>
+        <div class="col">
+
+            <div id="passenger_details_header"></div>
+            <div id="passenger_details"></div>
+        </div>
+    </div>
+    <div id="cancel_button"></div>
+</form>
+<br>
+<form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
+</form>
 </body>
 <script>
 
@@ -27,6 +65,7 @@
         display_booking(booking, passenger, flight[0], route[0]);
         add_cancel_option(booking['booking_id']);
     }
-
+    {% block content %}
+    {% endblock %}
 </script>
 </html>

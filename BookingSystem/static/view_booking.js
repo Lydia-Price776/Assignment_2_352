@@ -1,52 +1,48 @@
 function display_booking(booking, passenger, flight, route) {
-    let booking_details_div = document.getElementById("booking_details");
 
-    let flight_data = format_flight(flight, route, "flight_booked");
-    let booking_details = format_booking(booking, route);
-    let passenger_details = format_passenger(passenger);
-    console.log(passenger)
-    booking_details_div.appendChild(booking_details);
-    booking_details_div.appendChild(passenger_details);
-    booking_details_div.appendChild(flight_data);
+    format_flight(flight, route);
+    format_booking(booking, route);
+    format_passenger(passenger);
 }
 
 function format_flight(flight, route) {
-    let flight_data = document.createElement('div');
+    document.getElementById('flight_details_header').innerHTML = `<h4>Flight Details</h4>`;
+
+    let flight_data = document.getElementById('flight_details');
     flight_data.id = "flight_booked";
-    flight_data.innerHTML += `Date: ${flight['date']} <br>` +
-        `Flight Number: ${flight['route_id']} <br>` +
-        `Price: $${flight['price']} NZD<br>` +
-        `Departure Time: ${route['departure_time']} <br>` +
-        `Arrival Time: ${route['arrival_time']} <br>`;
+    flight_data.innerHTML += `<b>Date:</b> ${flight['date']} <br>` +
+        `<b>Flight Number:</b> ${flight['route_id']} <br>` +
+        `<b>Price:</b> $${flight['price']} NZD<br>` +
+        `<b>Departure Time:</b> ${route['departure_time']} <br>` +
+        `<b>Arrival Time:</b> ${route['arrival_time']} <br>`;
     if (route['stopover_location_id'] != null) {
-        flight_data.innerHTML += `Stopover Location: ${route['stopover_location_id']} <br>` +
-            `Stopover Length: ${route['stopover_time']} <br>`;
+        flight_data.innerHTML += `<b>Stopover Location:</b> ${route['stopover_location_id']} <br>` +
+            `<b>Stopover Length:</b> ${route['stopover_time']} minutes<br>`;
+    } else {
+        flight_data.innerHTML += `<b>Stopover Location:</b> NA <br>` +
+            `<b>Stopover Length:</b> NA<br>`;
     }
-    return flight_data;
 }
 
-function format_booking(booking, route) {
-    let booking_data = document.createElement('div');
+function format_booking(booking) {
+    let booking_data = document.getElementById('booking_ref');
     booking_data.id = "booking_data";
-    booking_data.innerHTML += `Booking Refernce: ${booking['booking_id']} <br>` +
-        `Route: ${route['departure_location_id']} to ${route['arrival_location_id']}`
-
-    return booking_data;
+    booking_data.innerHTML += `<h3>Booking Reference: ${booking['booking_id']}</h3>`
 }
 
 function format_passenger(passenger) {
-    let passenger_data = document.createElement('div');
-    passenger_data.id = "passenger_data";
-    passenger_data.innerHTML += `First Name: ${passenger['first_name']} <br>` +
-        `Last Name: ${passenger['last_name']} <br>` +
-        `Email Address: ${passenger['email']} <br>`;
-    if (passenger["phone_number"] !== "") {
-        passenger_data.innerHTML += `Phone Number: ${passenger['phone_number']} <br>`;
-    } else {
-        passenger_data.innerHTML += `Phone Number: Not Provided <br>`;
-    }
-    return passenger_data;
+    document.getElementById("passenger_details_header").innerHTML = `<h4>Passenger Details</h4>`;
 
+    let passenger_data = document.getElementById("passenger_details");
+    passenger_data.id = "passenger_data";
+    passenger_data.innerHTML += `<b>First Name:</b> ${passenger['first_name']} <br>` +
+        `<b>Last Name:</b> ${passenger['last_name']} <br>` +
+        `<b>Email Address:</b> ${passenger['email']} <br>`;
+    if (passenger["phone_number"] !== "") {
+        passenger_data.innerHTML += `<b>Phone Number:</b> ${passenger['phone_number']} <br>`;
+    } else {
+        passenger_data.innerHTML += `<b>Phone Number:</b> Not Provided <br>`;
+    }
 }
 
 function display_error(booking) {
@@ -69,9 +65,9 @@ function create_cancel_button() {
     cancel_button.id = 'cancel_button';
     cancel_button.type = 'submit';
     cancel_button.innerHTML = 'Cancel Booking';
+    cancel_button.classList.add("btn", "btn-primary");
     return cancel_button;
 }
-
 function create_cancel_data(booking_id) {
     let cancel_id = document.createElement('input');
     cancel_id.type = 'hidden';
@@ -82,7 +78,7 @@ function create_cancel_data(booking_id) {
 }
 
 function add_cancel_option(booking_id) {
-    let cancel_form = document.getElementById("cancel_booking");
+    let cancel_form = document.getElementById("cancel_button");
     let cancel_button = create_cancel_button();
     let cancel_id = create_cancel_data(booking_id);
     cancel_form.appendChild(cancel_id)

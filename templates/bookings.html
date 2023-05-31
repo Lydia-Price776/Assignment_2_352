@@ -4,21 +4,82 @@
     <meta charset="UTF-8">
     <title>Book a Flight</title>
     {% load static %}
+    <title>{% block book %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
 </head>
 <script src="{% static 'make_booking.js' %}"></script>
 <body>
-<h1>Book Your Flight</h1>
-<form id="booking_details" method="POST" action="{% url 'view' %}">
-    {% csrf_token %}
-    {{ form.as_table }}
-    <button id="book_button" type="submit" value="Submit">Book</button>
-</form>
+<div class="p-5 text-center bg-image"
+     style="background-image: url({% static 'airplane-flight.jpeg' %});
+             background-size: cover;
+             background-position: center;
+             height: 200px;">
+
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <h1 class="mb-3">Complete Your Booking</h1>
+            <h4 id="heading" class="mb-3"></h4>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="container text-center">
+    <form id="booking_details" method="POST" action="{% url 'view' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <div id="flight_details_header"></div>
+
+                <div id="flight_details"></div>
+            </div>
+            <div class="col">
+                <div id="passenger_details"></div>
+                <div class="mb-3">
+
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="mb-3">
+
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+                <div class="mb-3">
+
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="mb-3">
+
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                </div>
+            </div>
+        </div>
+        <br>
+        <button id="book_button" type="submit" style="width: 200px" class="btn btn-primary" value="Submit">
+            Book
+        </button>
+    </form>
+    <br>
+    <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
+    </form>
+</div>
+{% block content %}
+{% endblock %}
 </body>
 <script>
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
-    console.log(flight)
-    display_flight(flight[0], route[0]);
+    airports = {{ airports|safe }};
+    display_flight(flight[0], route[0], airports);
 
 </script>
 </html>

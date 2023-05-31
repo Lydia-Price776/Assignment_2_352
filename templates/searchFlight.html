@@ -2,16 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search for a Flight</title>
     {% load static %}
+    <title>{% block Search %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 <script src="{% static 'search_flight.js' %}"></script>
 
 <body>
+<div class="p-5 text-center bg-image"
+     style="background-image: url({% static 'airplane-flight.jpeg' %});
+             background-size: cover;
+             background-position: center;
+             height: 200px;">
 
-<form id="booking_form" method="POST" action="{% url 'book' %}">
-    {% csrf_token %}
-</form>
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <h1 class="mb-3">Search Results</h1>
+            <h4 id="heading" class="mb-3"></h4>
+        </div>
+    </div>
+
+</div>
+
+<div class="container ">
+    <div class="text-center" id="matches"></div>
+
+    <form id="booking_form" method="POST" action="{% url 'book' %}">
+        {% csrf_token %}
+
+        <table class="table" id="table"></table>
+        <div id="button" class="container text-center"></div>
+    </form>
+    <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
+    </form>
+</div>
+{% block content %}
+{% endblock %}
 
 </body>
 <script>

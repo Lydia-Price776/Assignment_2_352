@@ -4,13 +4,42 @@
     <meta charset="UTF-8">
     <title>Cancel Booking</title>
     {% load static %}
+    <title>{% block book %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 <script src="{% static 'cancel_booking.js' %}"></script>
 
 <body>
-<h1>Cancel Your Booking</h1>
-<div id="outcome"></div>
+<div class="p-5 text-center bg-image"
+     style="background-image: url({% static 'airplane-flight.jpeg' %});
+             background-size: cover;
+             background-position: center;
+             height: 200px;">
+
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <h1 class="mb-3">Booking Cancellation</h1>
+            <h4 id="heading" class="mb-3"></h4>
+
+        </div>
+    </div>
+
+</div>
+
+
+<form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
+    {% csrf_token %}
+    <br>
+    <div id="outcome" style="font-size: 20px"></div>
+    <br>
+    <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
+</form>
+
 </body>
+{% block content %}
+{% endblock %}
 <script>
     outcome = '{{ outcome|safe }}';
     console.log(outcome)

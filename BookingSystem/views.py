@@ -18,17 +18,21 @@ def homepage(request):
 
 
 def book(request):
+    print(request.POST)
     flight_check_box = json.loads(request.POST['check_box'])
     flight_data = Flight.objects.filter(flight_id=flight_check_box['flight_id']).values()
     route_data = Route.objects.filter(route_id=flight_check_box['route_id']).values()
-
+    airport_departure = Airport.objects.filter(code=route_data[0]['departure_location_id']).values()[0]['name']
+    airport_arrival = Airport.objects.filter(code=route_data[0]['arrival_location_id']).values()[0]['name']
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
 
     context = {
         "form": BookingForm,
         "flight_data": flight_data,
-        "route_data": route_data
+        "route_data": route_data,
+        'airports': {'departure': airport_departure, 'arrival': airport_arrival}
+
     }
     request.session['flight'] = flight_check_box[
         'flight_id']
