@@ -2,26 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flights</title>
     {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 
 <body>
-<h1>Flights Home Page</h1>
-
-<p><img src="{% static 'airplane-flight.jpg' %}"/></p>
-<form method="POST" action="{% url 'search' %}">
-    {% csrf_token %}
-    {{ form_flight.as_table }}
-    <input type="submit" value="Submit"/>
-</form>
-<form method="POST" action="{% url 'view' %}">
-    {% csrf_token %}
-    {{ form_booking.as_table }}
 
 
-    <input type="submit" value="Submit"/>
-</form>
+<div class="p-5 text-center bg-image"
+     style="background-image: url({% static 'airplane-flight.jpeg' %});
+             background-size: cover;
+             background-position: center;
+             height: 400px;">
+
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <h1 class="mb-3">Flights Home Page</h1>
+            <h4 class="mb-3">Subheading</h4>
+
+
+        </div>
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col text-center">
+
+            <br>
+
+            <h2>Search For Flight:</h2>
+            <form method="POST" action="{% url 'search' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+
+                    {{ form_flight.departure_date.label_tag }}
+                    {{ form_flight.departure_date }}
+                </div>
+                <div class="mb-3">
+
+                    {{ form_flight.departure_location.label_tag }}
+                    {{ form_flight.departure_location }}
+                </div>
+                <div class="mb-3">
+
+                    {{ form_flight.arrival_location.label_tag }}
+                    {{ form_flight.arrival_location }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Search</button>
+
+            </form>
+        </div>
+        <div class="col text-center">
+            <br>
+            <h2>Manage Your Booking:</h2>
+            <form method="POST" action="{% url 'view' %}">
+                {% csrf_token %}
+                {{ form_booking.as_table }}
+
+
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% block content %}
+{% endblock %}
 </body>
 
 

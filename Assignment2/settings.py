@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'BookingSystem.apps.BookingsystemConfig',
     "phonenumber_field",
+    'bootstrap5'
 ]
 
 MIDDLEWARE = [
