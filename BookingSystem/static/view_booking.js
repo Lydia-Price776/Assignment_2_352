@@ -46,17 +46,15 @@ function format_passenger(passenger) {
 }
 
 function display_error(booking) {
-    let booking_details_div = document.getElementById("booking_details");
-    let no_booking_div = document.createElement('div');
-    no_booking_div.id = "booking_data";
+    let error_div = document.getElementById("error");
+
     if (booking['error'] === 'unable to make booking') {
-        no_booking_div.innerHTML += `Something went wrong making your booking. ` +
+        error_div.innerHTML += `Something went wrong making your booking. <br>` +
             `Please contact our helpdesk during business hours`;
     } else {
-        no_booking_div.innerHTML += `Unable to retrieve your booking. Please enter a valid booking reference or` +
+        error_div.innerHTML += `Unable to retrieve your booking. <br> Please enter a valid booking reference or` +
             ` contact our helpdesk during business hours`;
     }
-    booking_details_div.appendChild(no_booking_div);
 
 }
 
@@ -68,6 +66,7 @@ function create_cancel_button() {
     cancel_button.classList.add("btn", "btn-primary");
     return cancel_button;
 }
+
 function create_cancel_data(booking_id) {
     let cancel_id = document.createElement('input');
     cancel_id.type = 'hidden';

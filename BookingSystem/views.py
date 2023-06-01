@@ -49,15 +49,16 @@ def generate_booking_ref():
 
 def view_booking(request):
     context = {"passenger": {'error': 'error'},
-               "booking": {'error': 'unable to make booking'},
+               "booking": {'error': 'unable to retrieve booking'},
                "flight": {'error': 'error'},
                "route": {'error': 'error'}}
-
     if 'booking_ref' in request.POST:
+
         if Bookings.objects.filter(booking_id=request.POST['booking_ref']).exists():
             booking = vars(Bookings.objects.get(booking_id=request.POST['booking_ref']))
             context = get_booking(request, booking)
     else:
+
         flight_id = request.session['flight']
         if Bookings.objects.filter(passenger_id__first_name=request.POST['first_name'],
                                    passenger_id__last_name=request.POST['last_name'],
@@ -72,7 +73,10 @@ def view_booking(request):
                     booking = vars(Bookings.objects.get(passenger_id=passenger, flight_id=flight))
                     context = get_booking(request, booking)
         else:
-
+            context = {"passenger": {'error': 'error'},
+                       "booking": {'error': 'unable to make booking'},
+                       "flight": {'error': 'error'},
+                       "route": {'error': 'error'}}
             flight_instance = Flight.objects.get(flight_id=flight_id)
             if flight_instance.seats_available > 0:
                 context = make_booking(flight_id, flight_instance, request)
@@ -154,11 +158,20 @@ def display_flight_matches(arrival_location, departure_date, departure_location)
 
 
 def cancel_booking(request):
+    print(request.POST)
     booking_to_cancel = request.POST.get('cancel_data')
     to_delete = Bookings.objects.filter(booking_id=booking_to_cancel)
+    print(to_delete)
+
     if to_delete.exists():
-        to_delete.delete()
-        context = {'outcome': 'success'}
+        departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id']).values()[0]['date']
+        print(departure_date)
+        current_date = datetime.date.today()
+        if departure_date < current_date:
+            context = {'outcome': 'date error'}
+        else:
+            to_delete.delete()
+            context = {'outcome': 'success'}
     else:
         context = {'outcome': 'error'}
 

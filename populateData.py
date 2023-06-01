@@ -6,7 +6,7 @@ import django
 
 django.setup()
 
-from BookingSystem.models import Plane, Airport, Route, Flight
+from BookingSystem.models import Plane, Airport, Route, Flight, Bookings, Passenger
 import datetime
 
 planes = [

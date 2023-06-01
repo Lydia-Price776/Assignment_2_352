@@ -29,7 +29,8 @@
     </div>
 
 </div>
-
+<br>
+<div id='error' class="text-center" style="font-size: 20px"></div>
 <form id="cancel_booking" class="container text-center" method="POST" action="{% url 'cancel' %}">
     {% csrf_token %}
     <br>
@@ -48,6 +49,7 @@
     <div id="cancel_button"></div>
 </form>
 <br>
+
 <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
