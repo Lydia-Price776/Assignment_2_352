@@ -3,6 +3,7 @@ import json
 import string
 import random
 
+import pytz as pytz
 from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -127,8 +128,9 @@ def search(request):
     departure_date = request.POST['departure_date']
     departure_location = request.POST['departure_location']
     arrival_location = request.POST['arrival_location']
-    current_date = datetime.datetime.now()
-    if datetime.datetime.strptime(departure_date, '%Y-%m-%d') < current_date:
+    current_date = datetime.date.today()
+    print(current_date)
+    if datetime.datetime.strptime(departure_date, '%Y-%m-%d').date() < current_date:
         context = {'flight_data': {'error': 'error'},
                    'route_data': {'error': 'error'},
                    'airports': {'error': 'error'}}
@@ -139,10 +141,13 @@ def search(request):
 
 
 def display_flight_matches(arrival_location, departure_date, departure_location):
+    timezone = pytz.timezone('Pacific/Auckland')
     flight_data = Flight.objects.filter(
         date=departure_date,
         route__departure_location=departure_location,
-        route__arrival_location=arrival_location, seats_available__gt=0).values()
+        route__arrival_location=arrival_location,
+        seats_available__gt=0)
+    flight_data = flight_data.filter(route__departure_time__gt=datetime.datetime.now(timezone).time()).values()
     route_data = Route.objects.filter(departure_location=departure_location,
                                       arrival_location=arrival_location).values()
     airport_departure = Airport.objects.filter(code=departure_location).values()[0]['name']
@@ -158,16 +163,18 @@ def display_flight_matches(arrival_location, departure_date, departure_location)
 
 
 def cancel_booking(request):
+    timezone = pytz.timezone('Pacific/Auckland')
     print(request.POST)
     booking_to_cancel = request.POST.get('cancel_data')
     to_delete = Bookings.objects.filter(booking_id=booking_to_cancel)
     print(to_delete)
 
     if to_delete.exists():
-        departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id']).values()[0]['date']
-        print(departure_date)
-        current_date = datetime.date.today()
-        if departure_date < current_date:
+        departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id'],
+                                               route__departure_time__gt=datetime.datetime.now(
+                                                   timezone).time()).values()
+
+        if not departure_date.exists():
             context = {'outcome': 'date error'}
         else:
             to_delete.delete()
