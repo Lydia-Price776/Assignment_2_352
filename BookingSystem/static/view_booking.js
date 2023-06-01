@@ -45,10 +45,13 @@ function format_passenger(passenger) {
     }
 }
 
-function display_error(booking) {
+function display_error(booking, exists) {
     let error_div = document.getElementById("error");
-
-    if (booking['error'] === 'unable to make booking') {
+    if (exists['exists'] === 'True') {
+        error_div.innerHTML += `A booking under that name already exists for this flight <br>` +
+            `Return to the home page to view your booking by entering your booking reference <br>` +
+            `Please contact our helpdesk during business hours if you require additional help`;
+    } else if (booking['error'] === 'unable to make booking') {
         error_div.innerHTML += `Something went wrong making your booking. <br>` +
             `Please contact our helpdesk during business hours`;
     } else {
