@@ -29,11 +29,13 @@
     </div>
 
 </div>
-
+<br>
+<div id='error' class="text-center" style="font-size: 20px"></div>
 <form id="cancel_booking" class="container text-center" method="POST" action="{% url 'cancel' %}">
     {% csrf_token %}
     <br>
     <div id="booking_ref" class="text-center"></div>
+    <div id="booking_exists" class="text-center"></div>
     <div class="row">
         <div class="col">
             <div id="flight_details_header"></div>
@@ -48,6 +50,7 @@
     <div id="cancel_button"></div>
 </form>
 <br>
+
 <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
@@ -59,10 +62,11 @@
     passenger =  {{ passenger|safe }};
     flight = {{ flight|safe }};
     route ={{ route|safe }};
-    if ('error' in booking) {
-        display_error(booking)
+    exists ={{ exists|safe }};
+    if ('error' in booking || exists['exists'] === 'True') {
+        display_error(booking, exists);
     } else {
-        display_booking(booking, passenger, flight[0], route[0]);
+        display_booking(booking, passenger, flight[0], route[0], exists);
         add_cancel_option(booking['booking_id']);
     }
     {% block content %}

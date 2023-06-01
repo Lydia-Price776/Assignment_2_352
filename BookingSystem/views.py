@@ -3,6 +3,7 @@ import json
 import string
 import random
 
+import pytz as pytz
 from django.shortcuts import render
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -49,15 +50,18 @@ def generate_booking_ref():
 
 def view_booking(request):
     context = {"passenger": {'error': 'error'},
-               "booking": {'error': 'unable to make booking'},
+               "booking": {'error': 'unable to retrieve booking'},
                "flight": {'error': 'error'},
-               "route": {'error': 'error'}}
-
+               "route": {'error': 'error'},
+               "exists": {'exists': 'False'}}
     if 'booking_ref' in request.POST:
+
         if Bookings.objects.filter(booking_id=request.POST['booking_ref']).exists():
             booking = vars(Bookings.objects.get(booking_id=request.POST['booking_ref']))
             context = get_booking(request, booking)
+            context['exists'] = {'exists': 'False'}
     else:
+
         flight_id = request.session['flight']
         if Bookings.objects.filter(passenger_id__first_name=request.POST['first_name'],
                                    passenger_id__last_name=request.POST['last_name'],
@@ -71,8 +75,13 @@ def view_booking(request):
                 if Bookings.objects.filter(passenger_id=passenger, flight_id=flight).exists():
                     booking = vars(Bookings.objects.get(passenger_id=passenger, flight_id=flight))
                     context = get_booking(request, booking)
+                    context['exists'] = {'exists': 'True'}
         else:
-
+            context = {"passenger": {'error': 'error'},
+                       "booking": {'error': 'unable to make booking'},
+                       "flight": {'error': 'error'},
+                       "route": {'error': 'error'},
+                       "exists": {'exists': 'False'}}
             flight_instance = Flight.objects.get(flight_id=flight_id)
             if flight_instance.seats_available > 0:
                 context = make_booking(flight_id, flight_instance, request)
@@ -99,7 +108,8 @@ def make_booking(flight, flight_instance, request):
     context = {"passenger": passenger,
                "booking": booking,
                "flight": flight_data,
-               "route": request.session['route']}
+               "route": request.session['route'],
+               "exists": {'exists': 'False'}}
     return context
 
 
@@ -123,8 +133,8 @@ def search(request):
     departure_date = request.POST['departure_date']
     departure_location = request.POST['departure_location']
     arrival_location = request.POST['arrival_location']
-    current_date = datetime.datetime.now()
-    if datetime.datetime.strptime(departure_date, '%Y-%m-%d') < current_date:
+    current_date = datetime.date.today()
+    if datetime.datetime.strptime(departure_date, '%Y-%m-%d').date() < current_date:
         context = {'flight_data': {'error': 'error'},
                    'route_data': {'error': 'error'},
                    'airports': {'error': 'error'}}
@@ -135,10 +145,16 @@ def search(request):
 
 
 def display_flight_matches(arrival_location, departure_date, departure_location):
+    timezone = pytz.timezone('Pacific/Auckland')
     flight_data = Flight.objects.filter(
         date=departure_date,
         route__departure_location=departure_location,
-        route__arrival_location=arrival_location, seats_available__gt=0).values()
+        route__arrival_location=arrival_location,
+        seats_available__gt=0)
+    if datetime.datetime.strptime(departure_date, '%Y-%m-%d').date() == datetime.date.today():
+        flight_data = flight_data.filter(route__departure_time__gt=datetime.datetime.now(timezone).time()).values()
+    else:
+        flight_data = flight_data.values()
     route_data = Route.objects.filter(departure_location=departure_location,
                                       arrival_location=arrival_location).values()
     airport_departure = Airport.objects.filter(code=departure_location).values()[0]['name']
@@ -154,11 +170,27 @@ def display_flight_matches(arrival_location, departure_date, departure_location)
 
 
 def cancel_booking(request):
+    timezone = pytz.timezone('Pacific/Auckland')
+    print(request.POST)
     booking_to_cancel = request.POST.get('cancel_data')
     to_delete = Bookings.objects.filter(booking_id=booking_to_cancel)
+    print(to_delete)
+
     if to_delete.exists():
-        to_delete.delete()
-        context = {'outcome': 'success'}
+
+        departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id']).values()
+        print(departure_date[0]['date'])
+
+        if departure_date[0]['date'] == datetime.date.today():
+            departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id'],
+                                                   route__departure_time__gt=datetime.datetime.now(
+                                                       timezone).time()).values()
+
+        if not departure_date.exists():
+            context = {'outcome': 'date error'}
+        else:
+            to_delete.delete()
+            context = {'outcome': 'success'}
     else:
         context = {'outcome': 'error'}
 

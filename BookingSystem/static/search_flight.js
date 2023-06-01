@@ -125,7 +125,7 @@ function display_error_past_date() {
     let booking_form = document.getElementById("booking_form");
     let error = document.createElement('div');
     error.id = "error";
-    error.innerHTML = `Unable to display past flights for booking`;
+    error.innerHTML = `Unable to display past flights for booking. Please enter future departure date.`;
     error.style.fontSize = '20px';
     error.classList.add('text-center');
     booking_form.appendChild(error);
