@@ -1,3 +1,4 @@
+import datetime
 import json
 import string
 import random
@@ -122,26 +123,34 @@ def search(request):
     departure_date = request.POST['departure_date']
     departure_location = request.POST['departure_location']
     arrival_location = request.POST['arrival_location']
+    current_date = datetime.datetime.now()
+    if datetime.datetime.strptime(departure_date, '%Y-%m-%d') < current_date:
+        context = {'flight_data': {'error': 'error'},
+                   'route_data': {'error': 'error'},
+                   'airports': {'error': 'error'}}
+    else:
+        context = display_flight_matches(arrival_location,
+                                         departure_date, departure_location)
+    return render(request, 'searchFlight.html', context)
 
+
+def display_flight_matches(arrival_location, departure_date, departure_location):
     flight_data = Flight.objects.filter(
         date=departure_date,
         route__departure_location=departure_location,
         route__arrival_location=arrival_location, seats_available__gt=0).values()
-
     route_data = Route.objects.filter(departure_location=departure_location,
                                       arrival_location=arrival_location).values()
-
     airport_departure = Airport.objects.filter(code=departure_location).values()[0]['name']
     airport_arrival = Airport.objects.filter(code=arrival_location).values()[0]['name']
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
-
     context = {
         'flight_data': flight_data,
         'route_data': route_data,
         'airports': {'departure': airport_departure, 'arrival': airport_arrival}
     }
-    return render(request, 'searchFlight.html', context)
+    return context
 
 
 def cancel_booking(request):

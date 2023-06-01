@@ -34,9 +34,11 @@
 
         <table class="table" id="table"></table>
         <div id="button" class="container text-center"></div>
+
     </form>
     <form id="booking_details" method="POST" class="text-center" action="{% url 'homepage' %}">
         {% csrf_token %}
+        <br>
         <button type="submit" class="btn btn-primary" value="submit">Return to Home Page</button>
     </form>
 </div>
@@ -45,11 +47,16 @@
 
 </body>
 <script>
-
     flight = {{ flight_data|safe }};
-    route = {{ route_data|safe }};
-    airports = {{ airports|safe }};
-    view_data(flight, route, airports);
+    console.log(flight);
+    if ('error' in flight) {
+        display_error_past_date();
+    } else {
+        route = {{ route_data|safe}};
+        airports = {{ airports|safe }};
+        view_data(flight, route, airports);
+    }
+
 
 </script>
 </html>
