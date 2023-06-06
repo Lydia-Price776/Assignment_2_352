@@ -8,7 +8,6 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 </head>
 <script src="{% static 'make_booking.js' %}"></script>
@@ -56,9 +55,17 @@
                     {{ form.email }}
                 </div>
                 <div class="mb-3">
-                    {{ form.phone_number.errors }}
+                    {% if form.phone_number.errors %}
+
+                        <div id="display_error" class="alert alert-warning" role="alert" >
+                            {{ form.phone_number.errors|striptags }}
+                        </div>
+
+                    {% endif %}
                     {{ form.phone_number.label_tag }}
                     {{ form.phone_number }}
+
+
                 </div>
             </div>
         </div>
@@ -77,10 +84,6 @@
 {% endblock %}
 </body>
 <script>
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-
     flight = {{ flight_data|safe }};
     route = {{ route_data|safe }};
     airports = {{ airports|safe }};

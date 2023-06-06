@@ -32,4 +32,5 @@ class BookingForm(forms.Form):
     last_name = forms.CharField(label='Last Name')
     email = forms.EmailField(label='Email Address')
     phone_number = PhoneNumberField(label='Phone Number', required=False)
-    phone_number.error_messages['invalid'] = 'Please enter a valid phone number including country code'
+    phone_number.error_messages['invalid'] = \
+        'Please enter a valid phone number including country code. For Example: +64 0274 571 326'
