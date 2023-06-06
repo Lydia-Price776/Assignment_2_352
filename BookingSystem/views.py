@@ -33,11 +33,14 @@ def book(request):
         "flight_data": flight_data,
         "route_data": route_data,
         'airports': {'departure': airport_departure, 'arrival': airport_arrival}
-
     }
     request.session['flight'] = flight_check_box[
         'flight_id']
     request.session['route'] = route_data
+    request.session['context'] = {"flight_data": flight_data,
+                                  "route_data": route_data,
+                                  'airports': {'departure': airport_departure, 'arrival': airport_arrival}
+                                  }
     return render(request, 'bookings.html', context)
 
 
@@ -83,8 +86,17 @@ def view_booking(request):
                        "route": {'error': 'error'},
                        "exists": {'exists': 'False'}}
             flight_instance = Flight.objects.get(flight_id=flight_id)
-            if flight_instance.seats_available > 0:
-                context = make_booking(flight_id, flight_instance, request)
+            form = BookingForm(request.POST)
+
+            if form.is_valid():
+                if flight_instance.seats_available > 0:
+                    context = make_booking(flight_id, flight_instance, request)
+            else:
+                print("Is invalid form")
+                print(form.errors)
+                context = request.session['context']
+                context['form'] = form
+                return render(request, 'bookings.html', context)
 
     return render(request, 'viewBooking.html', context)
 
@@ -94,6 +106,7 @@ def make_booking(flight, flight_instance, request):
                                          last_name=request.POST['last_name'],
                                          email=request.POST['email'],
                                          phone_number=request.POST['phone_number'])
+    print(vars(passenger))
     flight_instance.seats_available = flight_instance.seats_available - 1
     flight_instance.save()
     booking = vars(Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger,
@@ -102,8 +115,10 @@ def make_booking(flight, flight_instance, request):
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     passenger = vars(passenger)
     passenger.pop('_state')
-    passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
-                                str(passenger['phone_number'].national_number)
+    if passenger['phone_number'] != '':
+        passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
+                                    str(passenger['phone_number'].national_number)
+
     booking.pop('_state')
     context = {"passenger": passenger,
                "booking": booking,
@@ -117,8 +132,9 @@ def get_booking(request, booking):
     passenger = vars(Passenger.objects.get(passenger_id=booking['passenger_id']))
     flight = Flight.objects.filter(flight_id=booking['flight_id']).values()
     route = Route.objects.filter(route_id=flight[0]['route_id']).values()
-    passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
-                                str(passenger['phone_number'].national_number)
+    if passenger['phone_number'] != '':
+        passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
+                                    str(passenger['phone_number'].national_number)
     flight = json.dumps(list(flight), cls=DjangoJSONEncoder)
     route = json.dumps(list(route), cls=DjangoJSONEncoder)
     booking.pop('_state')
