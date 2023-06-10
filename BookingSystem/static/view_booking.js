@@ -1,8 +1,10 @@
 function display_booking(booking, passenger, flight, route, airports) {
-
+    let heading_div = document.getElementById("heading");
+    heading_div.innerHTML += `From ${airports['departure']} to ${airports['arrival']}`;
     format_flight(flight, route);
     format_booking(booking, route);
     format_passenger(passenger);
+
 }
 
 function format_flight(flight, route) {
