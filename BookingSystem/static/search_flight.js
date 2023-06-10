@@ -1,5 +1,5 @@
 function add_flight_data(i, flights, routes, airports) {
-
+    // Add flight to table
     let table_row = document.createElement('tbody');
     let flight_data_row = [flights[i]['date'], flights[i]['route_id'], flights[i]['price']];
     for (const j in routes) {
@@ -9,7 +9,7 @@ function add_flight_data(i, flights, routes, airports) {
 
             if (routes[j]['stopover_location_id'] != null) {
                 flight_data_row.push(routes[j]['stopover_location_id']);
-                flight_data_row.push(routes[j]['stopover_time']);
+                flight_data_row.push(routes[j]['stopover_time'] + " minutes");
 
             } else {
                 flight_data_row.push('NA');
@@ -25,7 +25,7 @@ function add_flight_data(i, flights, routes, airports) {
         row_element.appendChild(cell);
     }
 
-
+    // Add check box to table to beable to book flight
     let check_box = add_check_box(i, flights);
     let cell = document.createElement('td');
     cell.appendChild(check_box);
@@ -39,6 +39,7 @@ function add_flight_data(i, flights, routes, airports) {
 
 function handleCheckboxAndButton() {
     return function (checkbox) {
+        //Make sure only one flight can be booked at a time
         let checkboxes = document.getElementsByName('check_box');
         checkboxes.forEach(function (currentCheckbox) {
             if (currentCheckbox.id !== checkbox.target.id) {
@@ -47,7 +48,7 @@ function handleCheckboxAndButton() {
         });
 
         let enable = true;
-
+        //If no check box is selected, disable the booking button
         for (let i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
                 enable = false;
@@ -60,6 +61,7 @@ function handleCheckboxAndButton() {
 }
 
 function add_check_box(i, flights) {
+    // Function to create each check box
     let check_box = document.createElement('input');
     check_box.type = 'checkbox';
     check_box.name = 'check_box';
@@ -70,16 +72,18 @@ function add_check_box(i, flights) {
 }
 
 function add_submit_button() {
+    //Function to add submit button
     let submit_button = document.createElement('button')
     submit_button.type = 'submit';
     submit_button.id = 'booking_button';
     submit_button.innerHTML = 'Book';
     submit_button.classList.add("btn", "btn-primary");
-    submit_button.disabled = true;
+    submit_button.disabled = true; // Disable upon creating
     document.getElementById('button').appendChild(submit_button);
 }
 
 function create_table() {
+    //Create table to add flights too
     let table = document.getElementById("table");
     let t_header = document.createElement('thead');
     let header_row = document.createElement('tr');
@@ -98,6 +102,7 @@ function create_table() {
 }
 
 function view_data(flights, routes, airports) {
+    // Function to add flight data
     let heading_div = document.getElementById("heading");
     heading_div.innerHTML += `From ${airports['departure']} to ${airports['arrival']}`;
 
@@ -122,6 +127,7 @@ function view_data(flights, routes, airports) {
 }
 
 function display_error_past_date() {
+    //Error handling function
     let booking_form = document.getElementById("booking_form");
     let error = document.createElement('div');
     error.id = "error";

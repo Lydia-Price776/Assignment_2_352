@@ -2,6 +2,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+# Plane model to contain details relating to each plane
 class Plane(models.Model):
     plane_id = models.AutoField(primary_key=True)
     seats = models.IntegerField()
@@ -11,6 +12,7 @@ class Plane(models.Model):
         db_table = 'Plane'
 
 
+# Passenger model to contain details about each passenger
 class Passenger(models.Model):
     passenger_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
@@ -22,6 +24,7 @@ class Passenger(models.Model):
         db_table = 'Passenger'
 
 
+# Airport model to contain details about each airport
 class Airport(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20, primary_key=True)
@@ -31,6 +34,7 @@ class Airport(models.Model):
         db_table = 'Airport'
 
 
+# Route model to contain details about each airport
 class Route(models.Model):
     route_id = models.CharField(max_length=100, primary_key=True)
     departure_time = models.TimeField()
@@ -47,6 +51,7 @@ class Route(models.Model):
         db_table = 'Route'
 
 
+# Flight model to contain details about each flight
 class Flight(models.Model):
     flight_id = models.AutoField(primary_key=True)
     plane = models.ForeignKey(Plane, related_name='plane', on_delete=models.CASCADE)
@@ -59,6 +64,7 @@ class Flight(models.Model):
         db_table = 'Flight'
 
 
+# Booking model to contain details about each booking
 class Bookings(models.Model):
     booking_id = models.CharField(primary_key=True, max_length=8)
     passenger = models.ForeignKey(Passenger, related_name='passenger', on_delete=models.CASCADE)

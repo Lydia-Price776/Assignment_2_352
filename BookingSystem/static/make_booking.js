@@ -1,4 +1,5 @@
 function display_flight(flight, route, airports) {
+    //Function to display flight data for booking
     let heading_div = document.getElementById("heading");
     heading_div.innerHTML += `From ${airports['departure']} to ${airports['arrival']}`;
     document.getElementById('flight_details_header').innerHTML += `<h3>Flight Details:</h3>`
@@ -7,7 +8,7 @@ function display_flight(flight, route, airports) {
 
     let flight_data = display_flight_data(flight, route, airports)
     let booking_button = document.getElementById('book_button');
-    console.log(flight['seats_available'])
+    // Ensure there are seats available otherwise disable the booking button
     if (flight['seats_available'] > 0) {
         booking_button.disabled = false;
         booking_button.title = '';
@@ -19,6 +20,7 @@ function display_flight(flight, route, airports) {
 }
 
 function display_flight_data(flight, route, airports) {
+    // Display specific flight data
     let flight_data = document.createElement('div');
     flight_data.id = "flight_to_book";
     flight_data.innerHTML += `<b>Date:</b> ${flight['date']} <br>` +

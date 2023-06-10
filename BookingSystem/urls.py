@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+# Url paths for each page
 urlpatterns = [
     path('', views.homepage, name='homepage'),
     path('book_flight/', views.book, name='book'),

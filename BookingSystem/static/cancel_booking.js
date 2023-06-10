@@ -1,4 +1,5 @@
 function display_outcome(outcome) {
+    //Function to display the outcome of cancelling a flight
     let outcome_div = document.getElementById('outcome');
     if (outcome === 'success') {
         outcome_div.innerHTML += 'Your booking was cancelled successfully'
