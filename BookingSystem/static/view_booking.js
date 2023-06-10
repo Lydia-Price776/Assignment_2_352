@@ -1,4 +1,4 @@
-function display_booking(booking, passenger, flight, route) {
+function display_booking(booking, passenger, flight, route, airports) {
 
     format_flight(flight, route);
     format_booking(booking, route);
@@ -13,8 +13,8 @@ function format_flight(flight, route) {
     flight_data.innerHTML += `<b>Date:</b> ${flight['date']} <br>` +
         `<b>Flight Number:</b> ${flight['route_id']} <br>` +
         `<b>Price:</b> $${flight['price']} NZD<br>` +
-        `<b>Departure Time:</b> ${route['departure_time']} <br>` +
-        `<b>Arrival Time:</b> ${route['arrival_time']} <br>`;
+        `<b>Departure Time:</b> ${route['departure_time']} (${airports['departure_time_zone']}) <br>` +
+        `<b>Arrival Time:</b> ${route['arrival_time']} (${airports['arrival_time_zone']}) <br>`;
     if (route['stopover_location_id'] != null) {
         flight_data.innerHTML += `<b>Stopover Location:</b> ${route['stopover_location_id']} <br>` +
             `<b>Stopover Length:</b> ${route['stopover_time']} minutes<br>`;

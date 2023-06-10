@@ -23,8 +23,8 @@ def book(request):
     flight_check_box = json.loads(request.POST['check_box'])
     flight_data = Flight.objects.filter(flight_id=flight_check_box['flight_id']).values()
     route_data = Route.objects.filter(route_id=flight_check_box['route_id']).values()
-    airport_departure = Airport.objects.filter(code=route_data[0]['departure_location_id']).values()[0]['name']
-    airport_arrival = Airport.objects.filter(code=route_data[0]['arrival_location_id']).values()[0]['name']
+    airports = get_airport_data(flight_data, route_data)
+
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
 
@@ -32,15 +32,17 @@ def book(request):
         "form": BookingForm,
         "flight_data": flight_data,
         "route_data": route_data,
-        'airports': {'departure': airport_departure, 'arrival': airport_arrival}
+        'airports': airports
+
     }
     request.session['flight'] = flight_check_box[
         'flight_id']
     request.session['route'] = route_data
     request.session['context'] = {"flight_data": flight_data,
                                   "route_data": route_data,
-                                  'airports': {'departure': airport_departure, 'arrival': airport_arrival}
+                                  "airports": airports
                                   }
+
     return render(request, 'bookings.html', context)
 
 
@@ -56,6 +58,7 @@ def view_booking(request):
                "booking": {'error': 'unable to retrieve booking'},
                "flight": {'error': 'error'},
                "route": {'error': 'error'},
+               "airports": {'error': 'error'},
                "exists": {'exists': 'False'}}
     if 'booking_ref' in request.POST:
 
@@ -84,13 +87,16 @@ def view_booking(request):
                        "booking": {'error': 'unable to make booking'},
                        "flight": {'error': 'error'},
                        "route": {'error': 'error'},
-                       "exists": {'exists': 'False'}}
+                       "airports": {'error': 'error'},
+                       "exists": {'exists': 'False'}
+                       }
             flight_instance = Flight.objects.get(flight_id=flight_id)
             form = BookingForm(request.POST)
 
             if form.is_valid():
                 if flight_instance.seats_available > 0:
                     context = make_booking(flight_id, flight_instance, request)
+
             else:
                 print("Is invalid form")
                 print(form.errors)
@@ -106,12 +112,12 @@ def make_booking(flight, flight_instance, request):
                                          last_name=request.POST['last_name'],
                                          email=request.POST['email'],
                                          phone_number=request.POST['phone_number'])
-    print(vars(passenger))
     flight_instance.seats_available = flight_instance.seats_available - 1
     flight_instance.save()
     booking = vars(Bookings.objects.create(booking_id=generate_booking_ref(), passenger=passenger,
                                            flight=flight_instance))
     flight_data = Flight.objects.filter(flight_id=flight).values()
+    airports = get_airport_data(flight_data)
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     passenger = vars(passenger)
     passenger.pop('_state')
@@ -124,25 +130,40 @@ def make_booking(flight, flight_instance, request):
                "booking": booking,
                "flight": flight_data,
                "route": request.session['route'],
+               'airports': airports,
                "exists": {'exists': 'False'}}
     return context
+
+
+def get_airport_data(flight_data, route_data):
+    airport_departure = Airport.objects.filter(code=route_data[0]['departure_location_id']).values()[0]['name']
+    departure_time_zone = Airport.objects.filter(code=route_data[0]['departure_location_id']).values()[0]['time_zone']
+    airport_arrival = Airport.objects.filter(code=route_data[0]['arrival_location_id']).values()[0]['name']
+    arrival_time_zone = Airport.objects.filter(code=route_data[0]['arrival_location_id']).values()[0]['time_zone']
+    return {'departure': airport_departure, 'arrival': airport_arrival,
+            'departure_time_zone': departure_time_zone,
+            'arrival_time_zone': arrival_time_zone}
 
 
 def get_booking(request, booking):
     passenger = vars(Passenger.objects.get(passenger_id=booking['passenger_id']))
     flight = Flight.objects.filter(flight_id=booking['flight_id']).values()
     route = Route.objects.filter(route_id=flight[0]['route_id']).values()
+    airports = get_airport_data(flight, route)
     if passenger['phone_number'] != '':
         passenger['phone_number'] = '+' + str(passenger['phone_number'].country_code) + \
                                     str(passenger['phone_number'].national_number)
     flight = json.dumps(list(flight), cls=DjangoJSONEncoder)
     route = json.dumps(list(route), cls=DjangoJSONEncoder)
+
     booking.pop('_state')
     passenger.pop('_state')
     return {"passenger": passenger,
             "booking": booking,
             "flight": flight,
-            "route": route}
+            "route": route,
+            'airports': airports
+            }
 
 
 def search(request):
@@ -175,12 +196,16 @@ def display_flight_matches(arrival_location, departure_date, departure_location)
                                       arrival_location=arrival_location).values()
     airport_departure = Airport.objects.filter(code=departure_location).values()[0]['name']
     airport_arrival = Airport.objects.filter(code=arrival_location).values()[0]['name']
+    departure_time_zone = Airport.objects.filter(code=departure_location).values()[0]['time_zone']
+    arrival_time_zone = Airport.objects.filter(code=arrival_location).values()[0]['time_zone']
     flight_data = json.dumps(list(flight_data), cls=DjangoJSONEncoder)
     route_data = json.dumps(list(route_data), cls=DjangoJSONEncoder)
     context = {
         'flight_data': flight_data,
         'route_data': route_data,
-        'airports': {'departure': airport_departure, 'arrival': airport_arrival}
+        'airports': {'departure': airport_departure, 'arrival': airport_arrival,
+                     'departure_time_zone': departure_time_zone,
+                     'arrival_time_zone': arrival_time_zone}
     }
     return context
 

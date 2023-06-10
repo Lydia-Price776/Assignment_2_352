@@ -63,10 +63,12 @@
     flight = {{ flight|safe }};
     route ={{ route|safe }};
     exists ={{ exists|safe }};
+    airports = {{ airports|safe}};
+    console.log(airports)
     if ('error' in booking || exists['exists'] === 'True') {
         display_error(booking, exists);
     } else {
-        display_booking(booking, passenger, flight[0], route[0], exists);
+        display_booking(booking, passenger, flight[0], route[0], airports, exists);
         add_cancel_option(booking['booking_id']);
     }
     {% block content %}

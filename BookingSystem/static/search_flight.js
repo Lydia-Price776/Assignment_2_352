@@ -1,11 +1,11 @@
-function add_flight_data(i, flights, routes) {
+function add_flight_data(i, flights, routes, airports) {
 
     let table_row = document.createElement('tbody');
     let flight_data_row = [flights[i]['date'], flights[i]['route_id'], flights[i]['price']];
     for (const j in routes) {
         if (flights[i]['route_id'] === routes[j]['route_id']) {
-            flight_data_row.push(routes[j]['departure_time']);
-            flight_data_row.push(routes[j]['arrival_time']);
+            flight_data_row.push(routes[j]['departure_time'] + ' (' + airports['departure_time_zone'] + ')');
+            flight_data_row.push(routes[j]['arrival_time'] + ' (' + airports['arrival_time_zone'] + ')');
 
             if (routes[j]['stopover_location_id'] != null) {
                 flight_data_row.push(routes[j]['stopover_location_id']);
@@ -111,7 +111,7 @@ function view_data(flights, routes, airports) {
             match.innerHTML = `<h3>${flights.length} Matches Found: </h3>`
         }
         for (const i in flights) {
-            let row = add_flight_data(i, flights, routes);
+            let row = add_flight_data(i, flights, routes, airports);
             document.getElementById('table').appendChild(row);
         }
         add_submit_button();
