@@ -129,12 +129,17 @@ def cancel_booking(request):
     if to_delete.exists():
         departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id']).values()
 
-        if departure_date[0]['date'] == datetime.date.today():
+        if departure_date[0]['date'] <= datetime.date.today():
+            context = {'outcome': 'date error'}
+        elif departure_date[0]['date'] == datetime.date.today():
             departure_date = Flight.objects.filter(flight_id=to_delete.values()[0]['flight_id'],
                                                    route__departure_time__gt=datetime.datetime.now(
                                                        timezone).time()).values()
-        if not departure_date.exists():
-            context = {'outcome': 'date error'}
+            if not departure_date.exists():
+                context = {'outcome': 'date error'}
+            else:
+                to_delete.delete()
+                context = {'outcome': 'success'}
         else:
             to_delete.delete()
             context = {'outcome': 'success'}
