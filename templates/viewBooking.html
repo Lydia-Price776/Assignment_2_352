@@ -24,7 +24,7 @@
     <div class="d-flex justify-content-center align-items-center h-100">
         <div class="text-white">
             <h1 class="mb-3">Your Booking Details</h1>
-
+            <h4 id="heading" class="mb-3"></h4>
         </div>
     </div>
 
@@ -63,10 +63,12 @@
     flight = {{ flight|safe }};
     route ={{ route|safe }};
     exists ={{ exists|safe }};
+    airports = {{ airports|safe}};
+    console.log(airports)
     if ('error' in booking || exists['exists'] === 'True') {
         display_error(booking, exists);
     } else {
-        display_booking(booking, passenger, flight[0], route[0], exists);
+        display_booking(booking, passenger, flight[0], route[0], airports, exists);
         add_cancel_option(booking['booking_id']);
     }
     {% block content %}

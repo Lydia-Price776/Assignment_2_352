@@ -153,7 +153,7 @@ passenger = Passenger.objects.create(first_name='Josh',
                                      last_name='Math-Nerd',
                                      email='Joshisgay@gmail.com',
                                      phone_number='+64063228424')
-flight_instance = Flight.objects.get(flight_id=119)
+flight_instance = Flight.objects.get(flight_id=1)
 
 Bookings.objects.create(booking_id="123456", passenger=passenger,
                         flight=flight_instance)

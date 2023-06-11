@@ -1,11 +1,15 @@
-function display_booking(booking, passenger, flight, route) {
-
+function display_booking(booking, passenger, flight, route, airports) {
+    //Function to handle displaying booking details
+    let heading_div = document.getElementById("heading");
+    heading_div.innerHTML += `From ${airports['departure']} to ${airports['arrival']}`;
     format_flight(flight, route);
     format_booking(booking, route);
     format_passenger(passenger);
+
 }
 
 function format_flight(flight, route) {
+    // Function to format flight data
     document.getElementById('flight_details_header').innerHTML = `<h4>Flight Details</h4>`;
 
     let flight_data = document.getElementById('flight_details');
@@ -13,8 +17,8 @@ function format_flight(flight, route) {
     flight_data.innerHTML += `<b>Date:</b> ${flight['date']} <br>` +
         `<b>Flight Number:</b> ${flight['route_id']} <br>` +
         `<b>Price:</b> $${flight['price']} NZD<br>` +
-        `<b>Departure Time:</b> ${route['departure_time']} <br>` +
-        `<b>Arrival Time:</b> ${route['arrival_time']} <br>`;
+        `<b>Departure Time:</b> ${route['departure_time']} (${airports['departure_time_zone']}) <br>` +
+        `<b>Arrival Time:</b> ${route['arrival_time']} (${airports['arrival_time_zone']}) <br>`;
     if (route['stopover_location_id'] != null) {
         flight_data.innerHTML += `<b>Stopover Location:</b> ${route['stopover_location_id']} <br>` +
             `<b>Stopover Length:</b> ${route['stopover_time']} minutes<br>`;
@@ -25,12 +29,14 @@ function format_flight(flight, route) {
 }
 
 function format_booking(booking) {
+    // Function to format booking data
     let booking_data = document.getElementById('booking_ref');
     booking_data.id = "booking_data";
     booking_data.innerHTML += `<h3>Booking Reference: ${booking['booking_id']}</h3>`
 }
 
 function format_passenger(passenger) {
+    // Function to format passenger data
     document.getElementById("passenger_details_header").innerHTML = `<h4>Passenger Details</h4>`;
 
     let passenger_data = document.getElementById("passenger_details");
@@ -46,6 +52,7 @@ function format_passenger(passenger) {
 }
 
 function display_error(booking, exists) {
+    // Error handling Function
     let error_div = document.getElementById("error");
     if (exists['exists'] === 'True') {
         error_div.innerHTML += `A booking under that name already exists for this flight <br>` +
@@ -62,6 +69,7 @@ function display_error(booking, exists) {
 }
 
 function create_cancel_button() {
+    // Create cancel booking button
     let cancel_button = document.createElement('button');
     cancel_button.id = 'cancel_button';
     cancel_button.type = 'submit';
@@ -71,6 +79,7 @@ function create_cancel_button() {
 }
 
 function create_cancel_data(booking_id) {
+    // Create hidden input to pass booking data to cancel
     let cancel_id = document.createElement('input');
     cancel_id.type = 'hidden';
     cancel_id.id = 'cancel_data';
@@ -80,6 +89,7 @@ function create_cancel_data(booking_id) {
 }
 
 function add_cancel_option(booking_id) {
+    // Add option to cancel booking
     let cancel_form = document.getElementById("cancel_button");
     let cancel_button = create_cancel_button();
     let cancel_id = create_cancel_data(booking_id);
